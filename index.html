@@ -519,7 +519,7 @@
           <span>Session 6</span>
         </div>
         <div class="concept-body">
-          <p class="concept-application"><i class="fa-solid fa-brain" style="color:var(--accent);margin-right:.35rem"></i>XLM-RoBERTa for multilingual sentiment; MiniLM for 384-d dense sentence embedding.</p>
+          <p class="concept-application"><i class="fa-solid fa-brain" style="color:var(--accent);margin-right:.35rem"></i>XLM-RoBERTa for multilingual sentiment <span class="cite">[9]</span>; MiniLM for 384-d dense sentence embedding <span class="cite">[7]</span>.</p>
           <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Transformers contextualise each token relative to every other token. 'Crowded' meaning different things at a heritage site vs. a market was handled automatically — without any rule I wrote.</div>
         </div>
       </div>
@@ -567,7 +567,7 @@
           <span>Session 9</span>
         </div>
         <div class="concept-body">
-          <p class="concept-application"><i class="fa-solid fa-robot" style="color:var(--accent);margin-right:.35rem"></i>LLM agent autonomously decides when to invoke rag_retrieve(), get_hotspot(), or get_sentiment_summary() based on reasoning traces.</p>
+          <p class="concept-application"><i class="fa-solid fa-robot" style="color:var(--accent);margin-right:.35rem"></i>LLM agent autonomously decides when to invoke rag_retrieve(), get_hotspot(), or get_sentiment_summary() based on reasoning traces. <span class="cite">[5]</span></p>
           <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Tool descriptions are as important as tool implementations. When I wrote vague descriptions, the agent invoked the wrong tools. When I rewrote them precisely, it routed correctly.</div>
         </div>
       </div>
@@ -591,7 +591,7 @@
           <span>Sessions 2, 8</span>
         </div>
         <div class="concept-body">
-          <p class="concept-application"><i class="fa-solid fa-map" style="color:var(--accent);margin-right:.35rem"></i>POI coordinates feed into GPS simulation, DBSCAN, Folium rendering, and the get_hotspot() tool. GeoJSON bridges analytical and visualisation layers.</p>
+          <p class="concept-application"><i class="fa-solid fa-map" style="color:var(--accent);margin-right:.35rem"></i>POI coordinates feed into GPS simulation <span class="cite">[2]</span>, DBSCAN <span class="cite">[10]</span>, Folium rendering, and the get_hotspot() tool. GeoJSON bridges analytical and visualisation layers. <span class="cite">[3]</span></p>
           <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Spatial context changes query semantics entirely. 'Is Wat Doi Suthep crowded?' requires GPS data; 'Is it worth visiting?' requires sentiment. The agent needs to know this distinction.</div>
         </div>
       </div>
@@ -603,7 +603,7 @@
           <span>Session 10</span>
         </div>
         <div class="concept-body">
-          <p class="concept-application"><i class="fa-solid fa-chart-line" style="color:var(--accent);margin-right:.35rem"></i>HR@1/3/5 and MRR computed over 38 queries; breakdown by category (crowd, sentiment, planning, overtourism).</p>
+          <p class="concept-application"><i class="fa-solid fa-chart-line" style="color:var(--accent);margin-right:.35rem"></i>HR@1/3/5 and MRR computed over 38 queries; breakdown by category (crowd, sentiment, planning, overtourism). <span class="cite">[11]</span><span class="cite">[12]</span></p>
           <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Per-category evaluation revealed something aggregate metrics hid: the system performed poorly on cross-POI crowd comparisons. Evaluation is not confirmation — it is diagnosis.</div>
         </div>
       </div>
@@ -1145,20 +1145,20 @@
     </div>
     <div class="card">
       <div class="ref-list">
-        <div class="ref-item"><span class="ref-num">[1]</span><span>UNWTO, "World Tourism Barometer," United Nations World Tourism Organization, vol. 21, no. 1, Jan. 2023.</span></div>
-        <div class="ref-item"><span class="ref-num">[2]</span><span>N. Shoval and M. Isaacson, "Tracking Tourists in the Digital Age," <em>Annals of Tourism Research</em>, vol. 34, no. 1, pp. 141–159, Jan. 2007.</span></div>
-        <div class="ref-item"><span class="ref-num">[3]</span><span>J. Kiatkawsin, I. Sutherland, and J. Lee, "Determinants of Smart Tourist Technology Use," <em>Sustainability</em>, vol. 12, no. 16, p. 6584, Aug. 2020.</span></div>
-        <div class="ref-item"><span class="ref-num">[4]</span><span>P. Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," <em>NeurIPS</em>, vol. 33, pp. 9459–9474, 2020.</span></div>
-        <div class="ref-item"><span class="ref-num">[5]</span><span>S. Yao et al., "ReAct: Synergizing Reasoning and Acting in Language Models," <em>ICLR 2023</em>.</span></div>
-        <div class="ref-item"><span class="ref-num">[6]</span><span>Y. Gao et al., "Retrieval-Augmented Generation for Large Language Models: A Survey," <em>arXiv:2312.10997</em>, Dec. 2023.</span></div>
-        <div class="ref-item"><span class="ref-num">[7]</span><span>N. Reimers and I. Gurevych, "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks," <em>EMNLP</em>, pp. 3982–3992, Nov. 2019.</span></div>
-        <div class="ref-item"><span class="ref-num">[8]</span><span>J. Johnson, M. Douze, and H. Jégou, "Billion-Scale Similarity Search with GPUs," <em>IEEE Trans. Big Data</em>, vol. 7, no. 3, pp. 535–547, Sep. 2021.</span></div>
-        <div class="ref-item"><span class="ref-num">[9]</span><span>F. Barbieri et al., "TweetEval: Unified Benchmark and Comparative Evaluation for Tweet Classification," <em>EMNLP Findings</em>, pp. 1644–1650, Nov. 2020.</span></div>
-        <div class="ref-item"><span class="ref-num">[10]</span><span>M. Ester et al., "A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise," <em>KDD</em>, vol. 96, no. 34, pp. 226–231, 1996.</span></div>
-        <div class="ref-item"><span class="ref-num">[11]</span><span>V. Karpukhin et al., "Dense Passage Retrieval for Open-Domain Question Answering," <em>EMNLP</em>, pp. 6769–6781, Nov. 2020.</span></div>
-        <div class="ref-item"><span class="ref-num">[12]</span><span>S. Goodwin, "The Challenge of Overtourism," <em>Responsible Tourism Partnership</em>, Working Paper 4, Oct. 2017.</span></div>
-        <div class="ref-item"><span class="ref-num">[13]</span><span>Tourism Authority of Thailand, "Tourism Statistics 2019: Northern Region," Ministry of Tourism and Sports, Bangkok, 2020.</span></div>
-        <div class="ref-item"><span class="ref-num">[14]</span><span>A. Zheng and A. Casari, <em>Feature Engineering for Machine Learning</em>, O'Reilly Media, 2018.</span></div>
+        <div class="ref-item" id="ref1"><span class="ref-num">[1]</span><span>UNWTO, "World Tourism Barometer," United Nations World Tourism Organization, vol. 21, no. 1, Jan. 2023.<span class="ref-cited">Cited in: §5.3 Professional Practice</span></span></div>
+        <div class="ref-item" id="ref2"><span class="ref-num">[2]</span><span>N. Shoval and M. Isaacson, "Tracking Tourists in the Digital Age," <em>Annals of Tourism Research</em>, vol. 34, no. 1, pp. 141–159, Jan. 2007.<span class="ref-cited">Cited in: §5.1 Research · Concept #10 · System Diagram · Course Outcomes</span></span></div>
+        <div class="ref-item" id="ref3"><span class="ref-num">[3]</span><span>J. Kiatkawsin, I. Sutherland, and J. Lee, "Determinants of Smart Tourist Technology Use," <em>Sustainability</em>, vol. 12, no. 16, p. 6584, Aug. 2020.<span class="ref-cited">Cited in: §5.1 Research · Concept #10 · Course Outcomes</span></span></div>
+        <div class="ref-item" id="ref4"><span class="ref-num">[4]</span><span>P. Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," <em>NeurIPS</em>, vol. 33, pp. 9459–9474, 2020.<span class="ref-cited">Cited in: Concept #7 (RAG) · §5.1 Research · Evaluation Comparison</span></span></div>
+        <div class="ref-item" id="ref5"><span class="ref-num">[5]</span><span>S. Yao et al., "ReAct: Synergizing Reasoning and Acting in Language Models," <em>ICLR 2023</em>.<span class="ref-cited">Cited in: Concept #8 (Agentic AI) · §5.2 Academic · Evaluation Comparison · Course Outcomes · Glossary</span></span></div>
+        <div class="ref-item" id="ref6"><span class="ref-num">[6]</span><span>Y. Gao et al., "Retrieval-Augmented Generation for Large Language Models: A Survey," <em>arXiv:2312.10997</em>, Dec. 2023.<span class="ref-cited">Cited in: §5.1 Research · Concept #7 (RAG)</span></span></div>
+        <div class="ref-item" id="ref7"><span class="ref-num">[7]</span><span>N. Reimers and I. Gurevych, "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks," <em>EMNLP</em>, pp. 3982–3992, Nov. 2019.<span class="ref-cited">Cited in: Concept #4 (Transformer) · Concept #6 (Vector Retrieval) · Course Outcomes · Glossary</span></span></div>
+        <div class="ref-item" id="ref8"><span class="ref-num">[8]</span><span>J. Johnson, M. Douze, and H. Jégou, "Billion-Scale Similarity Search with GPUs," <em>IEEE Trans. Big Data</em>, vol. 7, no. 3, pp. 535–547, Sep. 2021.<span class="ref-cited">Cited in: Concept #6 (FAISS) · Course Outcomes · Glossary</span></span></div>
+        <div class="ref-item" id="ref9"><span class="ref-num">[9]</span><span>F. Barbieri et al., "TweetEval: Unified Benchmark and Comparative Evaluation for Tweet Classification," <em>EMNLP Findings</em>, pp. 1644–1650, Nov. 2020.<span class="ref-cited">Cited in: Concept #4 (Transformer) · Course Outcomes · Glossary</span></span></div>
+        <div class="ref-item" id="ref10"><span class="ref-num">[10]</span><span>M. Ester et al., "A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise," <em>KDD</em>, vol. 96, no. 34, pp. 226–231, 1996.<span class="ref-cited">Cited in: Concept #1 (DBSCAN) · Concept #10 (Geospatial) · §5.1 Research · Course Outcomes · Glossary</span></span></div>
+        <div class="ref-item" id="ref11"><span class="ref-num">[11]</span><span>V. Karpukhin et al., "Dense Passage Retrieval for Open-Domain Question Answering," <em>EMNLP</em>, pp. 6769–6781, Nov. 2020.<span class="ref-cited">Cited in: Concept #11 (Evaluation) · Course Outcomes</span></span></div>
+        <div class="ref-item" id="ref12"><span class="ref-num">[12]</span><span>S. Goodwin, "The Challenge of Overtourism," <em>Responsible Tourism Partnership</em>, Working Paper 4, Oct. 2017.<span class="ref-cited">Cited in: Concept #11 (Evaluation) · §3.2 Provenance · §5.3 Professional · Course Outcomes · Evaluation section</span></span></div>
+        <div class="ref-item" id="ref13"><span class="ref-num">[13]</span><span>Tourism Authority of Thailand, "Tourism Statistics 2019: Northern Region," Ministry of Tourism and Sports, Bangkok, 2020.<span class="ref-cited">Cited in: §5.3 Professional Practice</span></span></div>
+        <div class="ref-item" id="ref14"><span class="ref-num">[14]</span><span>A. Zheng and A. Casari, <em>Feature Engineering for Machine Learning</em>, O'Reilly Media, 2018.<span class="ref-cited">Cited in: §5.1 Research · Concept #3 (Feature Engineering)</span></span></div>
       </div>
     </div>
   </section>
