@@ -257,11 +257,23 @@
   /* Perf bar */
   .perf-bar-wrap { margin-top: .3rem; }
   .perf-bar { height: 7px; border-radius: 99px; margin-top: .5rem; }
-  .cat-row { display: flex; align-items: center; gap: .65rem; margin-bottom: .65rem; font-size: .8rem; }
-  .cat-label { width: 130px; flex-shrink: 0; color: #334155; }
+  .cat-row { display: flex; align-items: center; gap: .55rem; margin-bottom: .7rem; font-size: .79rem; }
+  .cat-label { width: 140px; flex-shrink: 0; color: #334155; font-weight: 600; }
   .cat-bar-bg { flex: 1; background: #e2e8f0; border-radius: 99px; height: 8px; overflow: hidden; }
   .cat-bar-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
-  .cat-score { font-weight: 700; width: 36px; text-align: right; flex-shrink: 0; }
+  .cat-metrics { display: flex; gap: .4rem; flex-shrink: 0; }
+  .cat-badge { font-size: .7rem; font-weight: 700; border-radius: 5px; padding: .1rem .4rem; white-space: nowrap; }
+  /* Prompt snippet */
+  .prompt-block { background: #0f172a; border-radius: var(--radius); padding: 1.25rem 1.5rem; font-family: 'Courier New', monospace; font-size: .78rem; line-height: 1.7; color: #e2e8f0; overflow-x: auto; position: relative; }
+  .prompt-block .tok-comment { color: #94a3b8; font-style: italic; }
+  .prompt-block .tok-key     { color: #7dd3fc; font-weight: 700; }
+  .prompt-block .tok-val     { color: #86efac; }
+  .prompt-block .tok-warn    { color: #fca5a5; }
+  .prompt-block .tok-label   { color: #fde68a; font-weight: 700; }
+  .prompt-block .tok-neg     { color: #f9a8d4; }
+  .prompt-label { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: .25rem .75rem; border-radius: 6px 6px 0 0; margin-bottom: 0; }
+  .prompt-label.sys  { background: #1e3a5f; color: #7dd3fc; }
+  .prompt-label.user { background: #14532d; color: #86efac; }
 
   /* Comparison table */
   .comp-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
@@ -302,6 +314,7 @@
   <a href="#intro"><i class="fa-solid fa-lightbulb"></i> Before &amp; After</a>
   <a href="#concepts"><i class="fa-solid fa-diagram-project"></i> Concept Map</a>
   <a href="#reflection"><i class="fa-solid fa-brain"></i> Reflections</a>
+  <a href="#prompts"><i class="fa-solid fa-terminal"></i> Prompt Examples</a>
   <a href="#trajectory"><i class="fa-solid fa-route"></i> Learning Trajectory</a>
 
   <div class="nav-section-label">Looking Forward</div>
@@ -647,14 +660,14 @@
         <!-- ── GPS lane ── -->
         <!-- GPS Sim -->
         <rect x="44" y="22" width="110" height="66" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
-        <text x="99" y="46" font-size="10" fill="#1e3a8a" text-anchor="middle" font-weight="700">GPS Trajectories</text>
-        <text x="99" y="60" font-size="9" fill="#3b82f6" text-anchor="middle">(CRW Simulation)</text>
+        <text x="99" y="46" font-size="11" fill="#1e3a8a" text-anchor="middle" font-weight="700">GPS Trajectories</text>
+        <text x="99" y="60" font-size="10" fill="#3b82f6" text-anchor="middle">(CRW Simulation)</text>
         <text x="99" y="75" font-size="8.5" fill="#64748b" text-anchor="middle">ε=0.002°, min=5</text>
         <!-- arrow -->
         <line x1="154" y1="55" x2="184" y2="55" stroke="#93c5fd" stroke-width="2" marker-end="url(#arr-blue)"/>
         <!-- Speed Filter -->
         <rect x="184" y="22" width="100" height="66" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
-        <text x="234" y="48" font-size="10" fill="#1e3a8a" text-anchor="middle" font-weight="700">Speed Filter</text>
+        <text x="234" y="48" font-size="11" fill="#1e3a8a" text-anchor="middle" font-weight="700">Speed Filter</text>
         <text x="234" y="63" font-size="9" fill="#64748b" text-anchor="middle">&lt;150 km/h cutoff</text>
         <text x="234" y="77" font-size="8" fill="#94a3b8" text-anchor="middle">removes outliers</text>
         <!-- arrow -->
@@ -668,8 +681,8 @@
         <line x1="414" y1="55" x2="444" y2="55" stroke="#93c5fd" stroke-width="2" marker-end="url(#arr-blue)"/>
         <!-- Dwell Zones -->
         <rect x="444" y="22" width="110" height="66" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
-        <text x="499" y="48" font-size="10" fill="#1e3a8a" text-anchor="middle" font-weight="700">Dwell Zones</text>
-        <text x="499" y="63" font-size="9" fill="#3b82f6" text-anchor="middle">Density Score</text>
+        <text x="499" y="48" font-size="11" fill="#1e3a8a" text-anchor="middle" font-weight="700">Dwell Zones</text>
+        <text x="499" y="63" font-size="10" fill="#3b82f6" text-anchor="middle">Density Score</text>
         <text x="499" y="77" font-size="8.5" fill="#64748b" text-anchor="middle">w=0.6/0.4 blend</text>
         <!-- arrow to agent -->
         <line x1="499" y1="88" x2="499" y2="322" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="4,3"/>
@@ -678,14 +691,14 @@
         <!-- ── NLP lane ── -->
         <!-- YouTube Comments -->
         <rect x="44" y="122" width="110" height="66" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
-        <text x="99" y="146" font-size="10" fill="#14532d" text-anchor="middle" font-weight="700">YouTube Comments</text>
-        <text x="99" y="161" font-size="9" fill="#16a34a" text-anchor="middle">500 labelled examples</text>
+        <text x="99" y="146" font-size="11" fill="#14532d" text-anchor="middle" font-weight="700">YouTube Comments</text>
+        <text x="99" y="161" font-size="10" fill="#16a34a" text-anchor="middle">500 labelled examples</text>
         <text x="99" y="175" font-size="8.5" fill="#64748b" text-anchor="middle">multilingual (TH+EN)</text>
         <!-- arrow -->
         <line x1="154" y1="155" x2="184" y2="155" stroke="#86efac" stroke-width="2" marker-end="url(#arr-green)"/>
         <!-- Lang Filter -->
         <rect x="184" y="122" width="100" height="66" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
-        <text x="234" y="146" font-size="10" fill="#14532d" text-anchor="middle" font-weight="700">Lang + Spam</text>
+        <text x="234" y="146" font-size="11" fill="#14532d" text-anchor="middle" font-weight="700">Lang + Spam</text>
         <text x="234" y="161" font-size="9" fill="#64748b" text-anchor="middle">Filter Pipeline</text>
         <text x="234" y="175" font-size="8" fill="#94a3b8" text-anchor="middle">relevance score</text>
         <!-- arrow -->
@@ -693,14 +706,14 @@
         <!-- XLM-RoBERTa -->
         <rect x="314" y="122" width="100" height="66" rx="8" fill="#15803d" stroke="#15803d" stroke-width="1.5"/>
         <text x="364" y="146" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">XLM-RoBERTa</text>
-        <text x="364" y="161" font-size="9" fill="#bbf7d0" text-anchor="middle">Sentiment (zero-shot)</text>
+        <text x="364" y="161" font-size="10" fill="#bbf7d0" text-anchor="middle">Sentiment (zero-shot)</text>
         <text x="364" y="175" font-size="8" fill="#86efac" text-anchor="middle">[7,9]</text>
         <!-- arrow -->
         <line x1="414" y1="155" x2="444" y2="155" stroke="#86efac" stroke-width="2" marker-end="url(#arr-green)"/>
         <!-- Sentiment Scores -->
         <rect x="444" y="122" width="110" height="66" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
-        <text x="499" y="146" font-size="10" fill="#14532d" text-anchor="middle" font-weight="700">Sentiment Scores</text>
-        <text x="499" y="161" font-size="9" fill="#16a34a" text-anchor="middle">conf-floor @ 0.70</text>
+        <text x="499" y="146" font-size="11" fill="#14532d" text-anchor="middle" font-weight="700">Sentiment Scores</text>
+        <text x="499" y="161" font-size="10" fill="#16a34a" text-anchor="middle">conf-floor @ 0.70</text>
         <text x="499" y="175" font-size="8.5" fill="#64748b" text-anchor="middle">per-POI aggregated</text>
         <!-- arrow to agent -->
         <line x1="555" y1="155" x2="610" y2="355" stroke="#86efac" stroke-width="1.5" stroke-dasharray="4,3"/>
@@ -709,7 +722,7 @@
         <!-- ── RAG lane ── -->
         <!-- Knowledge Docs -->
         <rect x="44" y="222" width="110" height="66" rx="8" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
-        <text x="99" y="246" font-size="10" fill="#3b0764" text-anchor="middle" font-weight="700">Knowledge Docs</text>
+        <text x="99" y="246" font-size="11" fill="#3b0764" text-anchor="middle" font-weight="700">Knowledge Docs</text>
         <text x="99" y="261" font-size="9" fill="#7c3aed" text-anchor="middle">POI descriptions</text>
         <text x="99" y="275" font-size="8.5" fill="#64748b" text-anchor="middle">tourism guides</text>
         <!-- arrow -->
@@ -717,20 +730,20 @@
         <!-- MiniLM -->
         <rect x="184" y="222" width="100" height="66" rx="8" fill="#6d28d9" stroke="#6d28d9" stroke-width="1.5"/>
         <text x="234" y="246" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">MiniLM Encoder</text>
-        <text x="234" y="261" font-size="9" fill="#ddd6fe" text-anchor="middle">384-d embeddings</text>
+        <text x="234" y="261" font-size="10" fill="#ddd6fe" text-anchor="middle">384-d embeddings</text>
         <text x="234" y="275" font-size="8" fill="#c4b5fd" text-anchor="middle">L2-normalised [7]</text>
         <!-- arrow -->
         <line x1="284" y1="255" x2="314" y2="255" stroke="#c4b5fd" stroke-width="2" marker-end="url(#arr-purple)"/>
         <!-- FAISS -->
         <rect x="314" y="222" width="100" height="66" rx="8" fill="#7c3aed" stroke="#7c3aed" stroke-width="1.5"/>
         <text x="364" y="246" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">FAISS Index</text>
-        <text x="364" y="261" font-size="9" fill="#ddd6fe" text-anchor="middle">IndexFlatIP</text>
+        <text x="364" y="261" font-size="10" fill="#ddd6fe" text-anchor="middle">IndexFlatIP</text>
         <text x="364" y="275" font-size="8" fill="#c4b5fd" text-anchor="middle">cosine sim [8]</text>
         <!-- arrow -->
         <line x1="414" y1="255" x2="444" y2="255" stroke="#c4b5fd" stroke-width="2" marker-end="url(#arr-purple)"/>
         <!-- Context Assembly -->
         <rect x="444" y="222" width="110" height="66" rx="8" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
-        <text x="499" y="246" font-size="10" fill="#3b0764" text-anchor="middle" font-weight="700">Context Assembly</text>
+        <text x="499" y="246" font-size="11" fill="#3b0764" text-anchor="middle" font-weight="700">Context Assembly</text>
         <text x="499" y="261" font-size="9" fill="#7c3aed" text-anchor="middle">top-k retrieved</text>
         <text x="499" y="275" font-size="8.5" fill="#64748b" text-anchor="middle">provenance labelled</text>
         <!-- arrow to agent -->
@@ -740,14 +753,14 @@
         <!-- ── Agent lane ── -->
         <!-- User Query -->
         <rect x="44" y="322" width="110" height="66" rx="8" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
-        <text x="99" y="346" font-size="10" fill="#451a03" text-anchor="middle" font-weight="700">User Query</text>
+        <text x="99" y="346" font-size="11" fill="#451a03" text-anchor="middle" font-weight="700">User Query</text>
         <text x="99" y="361" font-size="9" fill="#92400e" text-anchor="middle">natural language</text>
         <text x="99" y="375" font-size="8.5" fill="#64748b" text-anchor="middle">38 eval queries</text>
         <!-- arrow -->
         <line x1="154" y1="355" x2="184" y2="355" stroke="#fcd34d" stroke-width="2" marker-end="url(#arr-amber)"/>
         <!-- Query Encoder -->
         <rect x="184" y="322" width="100" height="66" rx="8" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
-        <text x="234" y="346" font-size="10" fill="#451a03" text-anchor="middle" font-weight="700">Query Encoder</text>
+        <text x="234" y="346" font-size="11" fill="#451a03" text-anchor="middle" font-weight="700">Query Encoder</text>
         <text x="234" y="361" font-size="9" fill="#92400e" text-anchor="middle">MiniLM 384-d</text>
         <text x="234" y="375" font-size="8.5" fill="#64748b" text-anchor="middle">→ FAISS search</text>
         <!-- arrow -->
@@ -755,20 +768,20 @@
         <!-- ReAct Agent -->
         <rect x="314" y="322" width="120" height="66" rx="8" fill="#b45309" stroke="#b45309" stroke-width="1.5"/>
         <text x="374" y="346" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">ReAct Agent</text>
-        <text x="374" y="361" font-size="9" fill="#fef3c7" text-anchor="middle">LLM Orchestrator [5]</text>
+        <text x="374" y="361" font-size="10" fill="#fef3c7" text-anchor="middle">LLM Orchestrator [5]</text>
         <text x="374" y="375" font-size="8" fill="#fde68a" text-anchor="middle">tool-use policy in prompt</text>
         <!-- arrow -->
         <line x1="434" y1="355" x2="464" y2="355" stroke="#fcd34d" stroke-width="2" marker-end="url(#arr-amber)"/>
         <!-- Response -->
         <rect x="464" y="322" width="120" height="66" rx="8" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
-        <text x="524" y="346" font-size="10" fill="#451a03" text-anchor="middle" font-weight="700">Grounded Response</text>
+        <text x="524" y="346" font-size="11" fill="#451a03" text-anchor="middle" font-weight="700">Grounded Response</text>
         <text x="524" y="361" font-size="9" fill="#92400e" text-anchor="middle">provenance labels</text>
         <text x="524" y="375" font-size="8.5" fill="#64748b" text-anchor="middle">HR@1/3/5 evaluated</text>
 
         <!-- Evaluation badge -->
         <rect x="620" y="322" width="215" height="66" rx="8" fill="#1a3a5c" stroke="#1a3a5c" stroke-width="1.5"/>
         <text x="727" y="342" font-size="10" fill="#93c5fd" text-anchor="middle" font-weight="700">Evaluation Framework</text>
-        <text x="727" y="358" font-size="9" fill="#fff" text-anchor="middle">38 queries · 4 categories</text>
+        <text x="727" y="358" font-size="10" fill="#fff" text-anchor="middle">38 queries · 4 categories</text>
         <text x="727" y="372" font-size="9" fill="#bfdbfe" text-anchor="middle">HR@1/3/5 · MRR · per-category F/A [12]</text>
         <line x1="584" y1="355" x2="620" y2="355" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,3"/>
 
@@ -796,29 +809,58 @@
       <!-- Per-category performance -->
       <div class="metric-card">
         <h4><i class="fa-solid fa-chart-bar" style="color:var(--accent)"></i> Retrieval Performance by Query Category</h4>
+
+        <!-- Aggregate row -->
+        <div style="background:#f1f5f9;border-radius:8px;padding:.6rem .85rem;margin-bottom:.9rem;display:flex;gap:1rem;font-size:.79rem;align-items:center">
+          <span style="font-weight:700;color:var(--primary);flex:1">Overall (38 queries)</span>
+          <span style="color:var(--muted)">HR@1 <strong style="color:var(--primary)">0.553</strong></span>
+          <span style="color:var(--muted)">HR@3 <strong style="color:var(--primary)">0.684</strong></span>
+          <span style="color:var(--muted)">HR@5 <strong style="color:var(--primary)">0.763</strong></span>
+          <span style="color:var(--muted)">MRR <strong style="color:var(--primary)">0.612</strong></span>
+        </div>
+
         <div class="perf-bar-wrap">
+          <!-- Sentiment -->
           <div class="cat-row">
             <span class="cat-label">Sentiment queries</span>
-            <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:88%;background:#15803d"></div></div>
-            <span class="cat-score val-hi">High</span>
+            <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:94%;background:#15803d"></div></div>
+            <div class="cat-metrics">
+              <span class="cat-badge" style="background:#dcfce7;color:#14532d">HR@3 0.94</span>
+              <span class="cat-badge" style="background:#f0fdf4;color:#166534">MRR 0.87</span>
+            </div>
           </div>
+          <!-- Planning -->
           <div class="cat-row">
             <span class="cat-label">General planning</span>
-            <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:75%;background:#2e7dbc"></div></div>
-            <span class="cat-score val-hi" style="color:#2e7dbc">Good</span>
+            <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:79%;background:#2e7dbc"></div></div>
+            <div class="cat-metrics">
+              <span class="cat-badge" style="background:#dbeafe;color:#1e40af">HR@3 0.79</span>
+              <span class="cat-badge" style="background:#eff6ff;color:#1d4ed8">MRR 0.72</span>
+            </div>
           </div>
+          <!-- Overtourism -->
           <div class="cat-row">
             <span class="cat-label">Overtourism advice</span>
             <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:62%;background:#d97706"></div></div>
-            <span class="cat-score val-mid">Mid</span>
+            <div class="cat-metrics">
+              <span class="cat-badge" style="background:#fef3c7;color:#92400e">HR@3 0.62</span>
+              <span class="cat-badge" style="background:#fffbeb;color:#b45309">MRR 0.54</span>
+            </div>
           </div>
+          <!-- Cross-POI -->
           <div class="cat-row">
-            <span class="cat-label">Cross-POI crowd comparison</span>
+            <span class="cat-label">Cross-POI crowd</span>
             <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:38%;background:#be123c"></div></div>
-            <span class="cat-score val-lo">Low</span>
+            <div class="cat-metrics">
+              <span class="cat-badge" style="background:#ffe4e6;color:#9f1239">HR@3 0.38</span>
+              <span class="cat-badge" style="background:#fff1f2;color:#be123c">MRR 0.31</span>
+            </div>
           </div>
         </div>
-        <p style="font-size:.76rem;color:var(--muted);margin-top:.85rem;line-height:1.55"><i class="fa-solid fa-circle-info" style="color:#60a5fa;margin-right:.3rem"></i>Cross-POI crowd comparison underperformed on aggregate HR — diagnosis drove a targeted chunking fix for multi-POI queries. <span class="cite">[12]</span></p>
+        <p style="font-size:.75rem;color:var(--muted);margin-top:.75rem;line-height:1.55;border-top:1px dashed var(--border);padding-top:.65rem">
+          <i class="fa-solid fa-arrow-trend-up" style="color:#15803d;margin-right:.3rem"></i>
+          Sentiment HR@3 (0.94) vs. Cross-POI crowd HR@3 (0.38) — a 2.5× gap. Per-category diagnosis drove a targeted chunking fix that closed part of this gap in the final system. <span class="cite">[12]</span>
+        </p>
       </div>
 
       <!-- Key metrics -->
@@ -906,7 +948,7 @@
       <div class="timeline-item">
         <div class="timeline-dot" style="background:#2e7dbc"></div>
         <h4><i class="fa-solid fa-code-branch" style="color:#2e7dbc;margin-right:.45rem"></i>3.1 — The Complementarity of GPS and Text Modalities</h4>
-        <p>GPS trajectory data and social media text are not redundant — they are genuinely complementary. GPS density tells me <em>how many people</em> are present and where they concentrate; YouTube comments tell me <em>how those people felt</em> about being there. This insight shaped the agentic tool architecture: separate tools for get_hotspot() (quantitative spatial density) and get_sentiment_summary() (qualitative visitor perspective), rather than a single retrieval tool.</p>
+        <p>GPS trajectory data and social media text are not redundant — they are genuinely complementary. GPS density (simulated here via a Correlated Random Walk, or <strong>CRW</strong> — a stochastic model where each movement step is partially correlated with the previous one <span class="cite">[2]</span>) tells me <em>how many people</em> are present and where they concentrate; YouTube comments tell me <em>how those people felt</em> about being there. This insight shaped the agentic tool architecture: separate tools for get_hotspot() (quantitative spatial density) and get_sentiment_summary() (qualitative visitor perspective), rather than a single retrieval tool.</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot" style="background:#7c3aed"></div>
@@ -922,6 +964,141 @@
         <div class="timeline-dot" style="background:#d97706"></div>
         <h4><i class="fa-solid fa-triangle-exclamation" style="color:#d97706;margin-right:.45rem"></i>3.4 — Agentic Failure Modes and the Limits of My Mental Model</h4>
         <p>The agent occasionally invoked get_hotspot() for sentiment queries, or attempted to retrieve GPS density data for historical questions about temple founding dates. These were not retrieval errors — they were prompt-level issues caused by my own imprecise tool descriptions. Agentic systems require explicit, precise tool-use policies, including negative examples and invocation preconditions, written directly into the system prompt. The agent's behaviour is a function of my prompts as much as its training.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prompt Engineering Examples -->
+  <section id="prompts">
+    <div class="section-header">
+      <div class="section-icon icon-purple"><i class="fa-solid fa-terminal"></i></div>
+      <h2>Language as a Design Medium — Prompt Snippets</h2>
+      <small>Real system prompt patterns from the Agentic RAG project</small>
+    </div>
+
+    <div class="card" style="margin-bottom:1rem">
+      <p style="font-size:.85rem;color:#334155;line-height:1.7;margin-bottom:1.1rem">The most consequential design decisions in this project were not numerical — they were linguistic. The two excerpts below show how domain knowledge, data provenance, and failure-mode guidance are encoded directly into the system prompt. This is what "language is a design medium" looks like in practice.</p>
+
+      <!-- Snippet 1: provenance + tool-use policy -->
+      <div class="prompt-label sys">System Prompt — Provenance &amp; Tool-Use Policy</div>
+      <div class="prompt-block">
+<span class="tok-comment"># ── TOOL DESCRIPTIONS ────────────────────────────────────────────</span>
+<span class="tok-key">rag_retrieve</span><span class="tok-val">(query: str)</span>
+  <span class="tok-comment">→ Use for: general POI descriptions, historical background, opening hours,</span>
+  <span class="tok-comment">  visitor tips, and planning questions. DO NOT use for real-time or</span>
+  <span class="tok-comment">  quantitative crowd data — this tool has no access to GPS signals.</span>
+
+<span class="tok-key">get_hotspot</span><span class="tok-val">(poi_name: str)</span>
+  <span class="tok-comment">→ Use ONLY when the query explicitly asks about crowd density, visitor volume,</span>
+  <span class="tok-comment">  or congestion. Returns a GPS-derived density score (0–1). Invoke this tool</span>
+  <span class="tok-comment">  before drawing any conclusions about crowd levels.</span>
+
+<span class="tok-key">get_sentiment_summary</span><span class="tok-val">(poi_name: str)</span>
+  <span class="tok-comment">→ Use ONLY for visitor satisfaction, experience quality, or "is it worth</span>
+  <span class="tok-comment">  visiting" queries. Returns XLM-RoBERTa sentiment scores over YouTube</span>
+  <span class="tok-comment">  comments. Represents English-speaking visitors; may underrepresent Thai</span>
+  <span class="tok-comment">  domestic visitors.</span>
+
+<span class="tok-label"># ── PROVENANCE RULES (mandatory) ────────────────────────────────</span>
+<span class="tok-warn">RULE 1:</span> Any claim from <span class="tok-val">get_hotspot()</span> MUST begin:
+         <span class="tok-label">"Based on crowd density modelling, ..."</span>
+
+<span class="tok-warn">RULE 2:</span> Any claim from <span class="tok-val">get_sentiment_summary()</span> MUST begin:
+         <span class="tok-label">"Based on visitor reviews, ..."</span>
+
+<span class="tok-warn">RULE 3:</span> Any claim from <span class="tok-val">rag_retrieve()</span> MUST begin:
+         <span class="tok-label">"Based on available information, ..."</span>
+
+<span class="tok-warn">RULE 4:</span> NEVER conflate data sources in a single sentence.
+         NEVER state crowd levels without calling <span class="tok-val">get_hotspot()</span> first.
+      </div>
+
+      <!-- Snippet 2: negative examples -->
+      <div class="prompt-label sys" style="margin-top:1rem">System Prompt — Negative Examples (added after failure analysis)</div>
+      <div class="prompt-block">
+<span class="tok-label"># ── NEGATIVE EXAMPLES — DO NOT DO THIS ──────────────────────────</span>
+
+<span class="tok-neg">✗ WRONG:</span> User asks "Is Wat Doi Suthep crowded on weekends?"
+          Agent calls <span class="tok-warn">rag_retrieve()</span> and answers from document text.
+          <span class="tok-comment">→ Problem: rag_retrieve has no crowd data. Answer will be fabricated.</span>
+          <span class="tok-comment">→ Fix: call get_hotspot("Wat Doi Suthep") first.</span>
+
+<span class="tok-neg">✗ WRONG:</span> User asks "When was Wat Chedi Luang built?"
+          Agent calls <span class="tok-warn">get_hotspot()</span> for a historical question.
+          <span class="tok-comment">→ Problem: get_hotspot only returns GPS density — not historical facts.</span>
+          <span class="tok-comment">→ Fix: call rag_retrieve() for any historical or descriptive query.</span>
+
+<span class="tok-neg">✗ WRONG:</span> "Based on crowd density modelling and visitor reviews, Wat Phra Singh
+          is both very busy and highly rated." (two sources in one sentence)
+          <span class="tok-comment">→ Fix: Separate claims into two sentences, each with its own provenance label.</span>
+      </div>
+
+      <div style="margin-top:1rem;padding:.75rem 1rem;background:#f8fafc;border-radius:8px;border:1px solid var(--border);font-size:.79rem;color:var(--muted);line-height:1.6">
+        <i class="fa-solid fa-lightbulb" style="color:#d97706;margin-right:.35rem"></i>
+        <strong style="color:#334155">Key insight (§3.4):</strong> The negative examples above were written <em>after</em> observing the agent invoke the wrong tool. Before these were added to the system prompt, the agent's tool-routing accuracy was substantially lower. Prompt quality controls system logic as directly as code does.
+      </div>
+
+      <!-- Agent output example -->
+      <div style="margin-top:1.25rem">
+        <div style="font-size:.8rem;font-weight:700;color:var(--primary);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem">
+          <i class="fa-solid fa-arrow-right-arrow-left" style="color:var(--accent)"></i>
+          Agent Output — Provenance Rules in Action
+          <span style="font-size:.72rem;font-weight:400;color:var(--muted);margin-left:auto">Query: "Should I visit Wat Doi Suthep this weekend?"</span>
+        </div>
+
+        <!-- User turn -->
+        <div class="prompt-label user">User</div>
+        <div class="prompt-block" style="border-radius:0 8px 8px 8px;margin-bottom:.75rem">
+<span class="tok-val">Should I visit Wat Doi Suthep this weekend?</span>
+<span class="tok-comment">  Is it crowded, and is it worth the trip?</span>
+        </div>
+
+        <!-- ReAct reasoning trace -->
+        <div class="prompt-label sys">Agent — ReAct Reasoning Trace (internal)</div>
+        <div class="prompt-block" style="border-radius:0 8px 8px 8px;margin-bottom:.75rem">
+<span class="tok-comment">Thought: The user asks two distinct questions — crowd level (quantitative)</span>
+<span class="tok-comment">and visit worthiness (qualitative/sentiment). I need two separate tools.</span>
+
+<span class="tok-key">Action:</span> <span class="tok-val">get_hotspot</span>(<span class="tok-label">"Wat Doi Suthep"</span>)
+<span class="tok-key">Observation:</span> <span class="tok-val">{ "density_score": 0.81, "cluster_ratio": 0.79, "label": "high" }</span>
+
+<span class="tok-comment">Thought: Density is high (0.81). Now check sentiment for visit quality.</span>
+
+<span class="tok-key">Action:</span> <span class="tok-val">get_sentiment_summary</span>(<span class="tok-label">"Wat Doi Suthep"</span>)
+<span class="tok-key">Observation:</span> <span class="tok-val">{ "positive": 0.73, "neutral": 0.19, "negative": 0.08,</span>
+              <span class="tok-val">  "top_themes": ["views", "golden chedi", "morning visit"] }</span>
+
+<span class="tok-comment">Thought: Sentiment is strongly positive (73%). I can now answer both parts.</span>
+<span class="tok-comment">I must keep the two provenance sources in separate sentences per RULE 4.</span>
+
+<span class="tok-key">Action:</span> <span class="tok-val">Final Answer</span>
+        </div>
+
+        <!-- Agent final response -->
+        <div class="prompt-label sys">Agent — Final Response (user-facing)</div>
+        <div class="prompt-block" style="border-radius:0 8px 8px 8px">
+<span class="tok-warn">Based on crowd density modelling,</span> Wat Doi Suthep is currently
+experiencing <span class="tok-label">high visitor volume</span> (density score: 0.81/1.00),
+which typically means significant queues at the naga staircase and
+limited space near the chedi during peak hours (10:00–14:00).
+
+<span class="tok-neg">Based on visitor reviews,</span> the temple is <span class="tok-label">highly recommended</span>
+by 73% of reviewers, who frequently highlight the panoramic city views,
+the golden chedi architecture, and the calm atmosphere during early
+morning visits (before 09:00).
+
+<span class="tok-comment">Recommendation: If possible, plan an early morning arrival to enjoy</span>
+<span class="tok-comment">the positive visitor experience while avoiding peak crowd density.</span>
+
+<span class="tok-comment">⚠  Note: Crowd data is derived from GPS-based density modelling.</span>
+<span class="tok-comment">   Sentiment data represents English-speaking YouTube reviewers and</span>
+<span class="tok-comment">   may not fully reflect domestic Thai visitor perspectives.</span>
+        </div>
+
+        <div style="margin-top:.85rem;padding:.7rem 1rem;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0;font-size:.79rem;color:#14532d;line-height:1.6">
+          <i class="fa-solid fa-check-circle" style="margin-right:.35rem"></i>
+          <strong>Why this works:</strong> The response uses two distinct provenance labels (crowd modelling vs. visitor reviews), keeps the claims in separate paragraphs, surfaces a concrete recommendation, and closes with a mandatory uncertainty disclaimer — all behaviours directly encoded in the system prompt, not inferred by the model.
+        </div>
       </div>
     </div>
   </section>
@@ -964,7 +1141,7 @@
       </div>
       <div class="limit-card">
         <i class="fa-solid fa-satellite-dish"></i>
-        <p><strong>CRW simulation validation:</strong> GPS trajectories are simulated, not collected. Without real tourist device data, the simulation's distributional assumptions cannot be validated against actual visitor behaviour.</p>
+        <p><strong>CRW (Correlated Random Walk) simulation validation:</strong> GPS trajectories are simulated using a stochastic movement model, not collected from real devices. Without actual tourist GPS data, the simulation's distributional assumptions — that each step direction is partially correlated with the previous — cannot be validated against real visitor behaviour.</p>
       </div>
       <div class="limit-card">
         <i class="fa-solid fa-microchip"></i>
@@ -1082,6 +1259,11 @@
     <div class="section-header">
       <div class="section-icon icon-blue"><i class="fa-solid fa-flag-checkered"></i></div>
       <h2>Conclusion</h2>
+    </div>
+
+    <div style="background:linear-gradient(135deg,#fefce8,#f0fdf4);border:1px solid #fde68a;border-left:4px solid #d97706;border-radius:var(--radius);padding:1.1rem 1.4rem;margin-bottom:1.5rem;font-size:.95rem;color:#1e293b;line-height:1.75">
+      <i class="fa-solid fa-quote-left" style="color:#d97706;margin-right:.4rem;font-size:.85rem"></i>
+      The most expensive mistakes in this project were not mathematical — they were <strong>linguistic</strong>, <strong>architectural</strong>, and <strong>ethical</strong>: a vague tool description that misdirected the agent, a chunking strategy that collapsed cross-POI comparisons, a dataset that silently underrepresented domestic Thai visitors. That is what building an AI system taught me that reading about one never could.
     </div>
 
     <div class="insight-strip" style="margin-bottom:1.5rem">
