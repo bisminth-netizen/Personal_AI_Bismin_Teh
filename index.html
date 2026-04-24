@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal AI Map — Teh Bismin</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent: #2e7dbc;
+    --accent2: #16a34a;
+    --accent3: #7c3aed;
+    --accent4: #d97706;
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --nav-w: 260px;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+  /* ── Sidebar ── */
+  nav {
+    position: fixed; top: 0; left: 0; width: var(--nav-w);
+    height: 100vh; background: var(--primary); color: #fff;
+    overflow-y: auto; z-index: 100; padding: 0 0 2rem;
+    display: flex; flex-direction: column;
+  }
+  .nav-brand {
+    padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,.15);
+    margin-bottom: .5rem;
+  }
+  .nav-brand h2 { font-size: .85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #93c5fd; margin-bottom: .25rem; }
+  .nav-brand p { font-size: .75rem; color: rgba(255,255,255,.6); }
+  nav a {
+    display: flex; align-items: center; gap: .65rem;
+    padding: .5rem 1.25rem; font-size: .82rem; color: rgba(255,255,255,.75);
+    text-decoration: none; border-left: 3px solid transparent; transition: all .2s;
+  }
+  nav a:hover, nav a.active { color: #fff; background: rgba(255,255,255,.07); border-left-color: #60a5fa; }
+  nav a i { width: 16px; text-align: center; font-size: .8rem; flex-shrink: 0; }
+  .nav-section-label {
+    font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(255,255,255,.35); padding: .9rem 1.25rem .3rem;
+  }
+
+  /* ── Main ── */
+  main { margin-left: var(--nav-w); width: calc(100% - var(--nav-w)); padding: 2rem 2.5rem 4rem; max-width: 1100px; }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, #1a3a5c 0%, #1e5fa8 50%, #1a3a5c 100%);
+    border-radius: var(--radius); padding: 3.5rem 3rem; color: #fff; margin-bottom: 2rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: .5;
+  }
+  .hero-tag { display: inline-flex; align-items: center; gap: .4rem; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25); border-radius: 99px; padding: .3rem .85rem; font-size: .75rem; margin-bottom: 1.25rem; }
+  .hero h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: .5rem; position: relative; }
+  .hero h1 span { color: #93c5fd; }
+  .hero-sub { font-size: 1rem; color: rgba(255,255,255,.8); max-width: 560px; line-height: 1.6; margin-bottom: 2rem; position: relative; }
+  .hero-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; position: relative; }
+  .hero-meta-item { display: flex; align-items: center; gap: .5rem; font-size: .85rem; color: rgba(255,255,255,.85); }
+  .hero-meta-item i { color: #93c5fd; }
+
+  /* ── Sections ── */
+  section { margin-bottom: 2.5rem; scroll-margin-top: 2rem; }
+  .section-header {
+    display: flex; align-items: center; gap: .75rem;
+    margin-bottom: 1.25rem; padding-bottom: .75rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .9rem; flex-shrink: 0;
+  }
+  .icon-blue   { background: #dbeafe; color: #1d4ed8; }
+  .icon-green  { background: #dcfce7; color: #15803d; }
+  .icon-purple { background: #ede9fe; color: #6d28d9; }
+  .icon-orange { background: #ffedd5; color: #c2410c; }
+  .icon-teal   { background: #ccfbf1; color: #0f766e; }
+  .icon-rose   { background: #ffe4e6; color: #be123c; }
+  .icon-indigo { background: #e0e7ff; color: #3730a3; }
+  .icon-amber  { background: #fef3c7; color: #b45309; }
+
+  .section-header h2 { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+  .section-header small { font-size: .8rem; color: var(--muted); margin-left: auto; }
+
+  /* ── Cards ── */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
+  .card + .card { margin-top: 1rem; }
+
+  /* ── Personal Note ── */
+  .personal-note {
+    background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+    border: 1px solid #bfdbfe; border-radius: var(--radius); padding: 1.25rem 1.5rem;
+    display: flex; gap: 1rem; margin-bottom: 2rem;
+  }
+  .personal-note i { color: var(--accent); font-size: 1.1rem; flex-shrink: 0; margin-top: .1rem; }
+  .personal-note p { font-size: .87rem; color: #334155; line-height: 1.65; font-style: italic; }
+
+  /* ── Skill grid (executive summary) ── */
+  .skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .skill-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.1rem 1.25rem; display: flex; gap: .9rem; align-items: flex-start;
+    transition: box-shadow .2s, transform .2s;
+  }
+  .skill-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); transform: translateY(-2px); }
+  .skill-card-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: .85rem; flex-shrink: 0; }
+  .skill-card-body h4 { font-size: .88rem; font-weight: 700; color: var(--primary); margin-bottom: .25rem; }
+  .skill-card-body p { font-size: .77rem; color: var(--muted); line-height: 1.5; }
+  .skill-card-applied { display: inline-block; margin-top: .4rem; font-size: .7rem; background: #f1f5f9; color: #475569; border-radius: 99px; padding: .15rem .6rem; }
+
+  /* ── Before/After comparison ── */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .compare-col { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  .compare-col-header { padding: .75rem 1.1rem; font-size: .8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; display: flex; align-items: center; gap: .5rem; }
+  .compare-col-header.before { background: #fef2f2; color: #991b1b; }
+  .compare-col-header.after  { background: #f0fdf4; color: #166534; }
+  .compare-row { padding: .7rem 1.1rem; font-size: .82rem; border-top: 1px solid var(--border); line-height: 1.5; }
+  .compare-row:nth-child(even) { background: #fafafa; }
+  .compare-row strong { display: block; font-size: .72rem; color: var(--muted); margin-bottom: .15rem; text-transform: uppercase; letter-spacing: .04em; }
+
+  /* ── Concept Map (12 cards) ── */
+  .concept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+  .concept-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; transition: box-shadow .2s, transform .2s;
+  }
+  .concept-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.1); transform: translateY(-2px); }
+  .concept-header { padding: .9rem 1.1rem; display: flex; gap: .75rem; align-items: center; }
+  .concept-num { width: 28px; height: 28px; border-radius: 8px; background: var(--primary); color: #fff; font-size: .75rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .concept-header h4 { font-size: .9rem; font-weight: 700; color: var(--primary); }
+  .concept-header span { margin-left: auto; font-size: .72rem; color: var(--muted); background: #f1f5f9; border-radius: 99px; padding: .15rem .6rem; white-space: nowrap; }
+  .concept-body { padding: .75rem 1.1rem 1rem; border-top: 1px solid var(--border); }
+  .concept-application { font-size: .8rem; color: #334155; line-height: 1.6; margin-bottom: .6rem; }
+  .concept-insight { background: #f8fafc; border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: .5rem .75rem; font-size: .78rem; color: var(--muted); line-height: 1.55; font-style: italic; }
+
+  /* ── Timeline (narrative) ── */
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before { content: ''; position: absolute; left: .55rem; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent), var(--accent3)); border-radius: 99px; }
+  .timeline-item { position: relative; margin-bottom: 1.75rem; }
+  .timeline-dot { position: absolute; left: -2rem; top: .2rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--accent); }
+  .timeline-item h4 { font-size: .95rem; font-weight: 700; color: var(--primary); margin-bottom: .4rem; }
+  .timeline-item p { font-size: .85rem; color: #334155; line-height: 1.7; }
+
+  /* ── Shift badges ── */
+  .shift-list { display: flex; flex-direction: column; gap: .75rem; }
+  .shift-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; gap: .9rem; align-items: flex-start; }
+  .shift-badge { background: var(--primary); color: #fff; font-size: .72rem; font-weight: 700; padding: .2rem .55rem; border-radius: 6px; white-space: nowrap; margin-top: .1rem; flex-shrink: 0; }
+  .shift-item p { font-size: .85rem; color: #334155; line-height: 1.6; }
+
+  /* ── Future apps ── */
+  .future-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+  .future-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .future-card-head { padding: 1.1rem 1.25rem; }
+  .future-card-head i { font-size: 1.4rem; margin-bottom: .5rem; }
+  .future-card-head h4 { font-size: .95rem; font-weight: 700; color: var(--primary); }
+  .future-card-body { padding: .25rem 1.25rem 1.25rem; }
+  .future-item { display: flex; gap: .5rem; margin-bottom: .6rem; font-size: .82rem; color: #334155; line-height: 1.5; }
+  .future-item i { color: var(--accent2); font-size: .75rem; flex-shrink: 0; margin-top: .2rem; }
+
+  /* ── Outcome table ── */
+  .outcome-table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+  .outcome-table th { background: var(--primary); color: #fff; padding: .65rem .85rem; text-align: left; font-size: .78rem; font-weight: 600; letter-spacing: .02em; }
+  .outcome-table th:first-child { border-radius: 8px 0 0 0; }
+  .outcome-table th:last-child  { border-radius: 0 8px 0 0; }
+  .outcome-table td { padding: .7rem .85rem; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+  .outcome-table tr:last-child td { border-bottom: none; }
+  .outcome-table tr:nth-child(even) td { background: #f8fafc; }
+  .badge { display: inline-flex; align-items: center; gap: .3rem; border-radius: 99px; padding: .2rem .65rem; font-size: .72rem; font-weight: 700; white-space: nowrap; }
+  .badge-full    { background: #dcfce7; color: #15803d; }
+  .badge-partial { background: #fef3c7; color: #92400e; }
+
+  /* ── Limitations ── */
+  .limit-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: .85rem; }
+  .limit-card { background: #fff9f0; border: 1px solid #fde68a; border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; gap: .75rem; }
+  .limit-card i { color: var(--accent4); flex-shrink: 0; margin-top: .1rem; }
+  .limit-card p { font-size: .83rem; color: #451a03; line-height: 1.6; }
+
+  /* ── Glossary ── */
+  .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .75rem; }
+  .gloss-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: .85rem 1rem; }
+  .gloss-term { font-size: .82rem; font-weight: 800; color: var(--primary); margin-bottom: .3rem; }
+  .gloss-def  { font-size: .79rem; color: var(--muted); line-height: 1.55; }
+
+  /* ── References ── */
+  .ref-list { display: flex; flex-direction: column; gap: .5rem; }
+  .ref-item { display: flex; gap: .75rem; font-size: .82rem; color: #334155; line-height: 1.55; }
+  .ref-num { font-weight: 700; color: var(--accent); flex-shrink: 0; }
+
+  /* ── Conclusion quote ── */
+  .quote-block {
+    background: linear-gradient(135deg, #1a3a5c, #1e5fa8);
+    border-radius: var(--radius); padding: 2rem 2.5rem; color: #fff; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .quote-block::before { content: '\201C'; position: absolute; top: -1rem; left: 1rem; font-size: 8rem; color: rgba(255,255,255,.08); font-family: Georgia, serif; line-height: 1; }
+  .quote-block p { font-size: 1.05rem; line-height: 1.75; font-style: italic; position: relative; max-width: 680px; margin: 0 auto; }
+  .quote-block small { display: block; margin-top: .75rem; color: #93c5fd; font-size: .82rem; font-style: normal; position: relative; }
+
+  /* ── Key insights ── */
+  .insight-strip { display: flex; gap: 1rem; }
+  .insight-chip { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; text-align: center; }
+  .insight-chip i { font-size: 1.4rem; margin-bottom: .5rem; }
+  .insight-chip h4 { font-size: .85rem; font-weight: 700; color: var(--primary); margin-bottom: .25rem; }
+  .insight-chip p { font-size: .77rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── Course feedback ── */
+  .feedback-card { background: linear-gradient(135deg, #f0fdf4, #eff6ff); border: 1px solid #bbf7d0; border-radius: var(--radius); padding: 1.5rem; }
+  .feedback-card p { font-size: .87rem; color: #1e293b; line-height: 1.75; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    :root { --nav-w: 220px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .future-grid  { grid-template-columns: 1fr; }
+    .limit-grid   { grid-template-columns: 1fr; }
+    .insight-strip { flex-direction: column; }
+  }
+  @media (max-width: 640px) {
+    nav { display: none; }
+    main { margin-left: 0; width: 100%; padding: 1.25rem; }
+    .hero h1 { font-size: 1.7rem; }
+  }
+
+  /* ── Citation badge ── */
+  .cite { display: inline-block; font-size: .68rem; font-weight: 700; color: var(--accent); background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 0 .3rem; margin: 0 .1rem; vertical-align: super; line-height: 1.6; cursor: default; }
+
+  /* ── System Diagram ── */
+  .diagram-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; overflow-x: auto; }
+  .diagram-wrap svg { display: block; margin: 0 auto; max-width: 100%; }
+
+  /* ── Evaluation / Metrics ── */
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+  .metric-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+  .metric-card h4 { font-size: .82rem; font-weight: 700; color: var(--primary); margin-bottom: .9rem; display: flex; align-items: center; gap: .45rem; }
+  .metric-row { display: flex; justify-content: space-between; align-items: center; padding: .4rem 0; border-bottom: 1px dashed var(--border); font-size: .82rem; }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-row .label { color: var(--muted); }
+  .metric-val { font-weight: 700; font-size: .9rem; }
+  .val-hi  { color: #15803d; }
+  .val-mid { color: #d97706; }
+  .val-lo  { color: #be123c; }
+
+  /* Perf bar */
+  .perf-bar-wrap { margin-top: .3rem; }
+  .perf-bar { height: 7px; border-radius: 99px; margin-top: .5rem; }
+  .cat-row { display: flex; align-items: center; gap: .65rem; margin-bottom: .65rem; font-size: .8rem; }
+  .cat-label { width: 130px; flex-shrink: 0; color: #334155; }
+  .cat-bar-bg { flex: 1; background: #e2e8f0; border-radius: 99px; height: 8px; overflow: hidden; }
+  .cat-bar-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
+  .cat-score { font-weight: 700; width: 36px; text-align: right; flex-shrink: 0; }
+
+  /* Comparison table */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  .comp-table th { padding: .6rem .85rem; text-align: left; font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); background: #f8fafc; border-bottom: 2px solid var(--border); }
+  .comp-table th.rag-col  { background: #fef9f0; color: #92400e; }
+  .comp-table th.agen-col { background: #f0fdf4; color: #15803d; }
+  .comp-table td { padding: .6rem .85rem; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table .dim { font-weight: 600; color: var(--primary); }
+  .win  { color: #15803d; font-weight: 700; }
+  .lose { color: #be123c; }
+  .neutral { color: #64748b; }
+
+  /* References with in-text anchor */
+  .ref-item { scroll-margin-top: 4rem; }
+  .ref-cited { font-size: .72rem; color: var(--muted); margin-left: .4rem; font-style: italic; }
+
+  /* Progress bar at top */
+  #progress { position: fixed; top: 0; left: var(--nav-w); right: 0; height: 3px; background: linear-gradient(90deg, #60a5fa, #34d399); transform-origin: left; z-index: 200; }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- ── Sidebar Navigation ── -->
+<nav id="sidebar">
+  <div class="nav-brand">
+    <h2>Personal AI Map</h2>
+    <p>Teh Bismin &middot; LS2525222</p>
+  </div>
+
+  <div class="nav-section-label">Overview</div>
+  <a href="#hero"><i class="fa-solid fa-house"></i> Home</a>
+  <a href="#summary"><i class="fa-solid fa-table-list"></i> Executive Summary</a>
+
+  <div class="nav-section-label">Learning Journey</div>
+  <a href="#intro"><i class="fa-solid fa-lightbulb"></i> Before &amp; After</a>
+  <a href="#concepts"><i class="fa-solid fa-diagram-project"></i> Concept Map</a>
+  <a href="#reflection"><i class="fa-solid fa-brain"></i> Reflections</a>
+  <a href="#trajectory"><i class="fa-solid fa-route"></i> Learning Trajectory</a>
+
+  <div class="nav-section-label">Looking Forward</div>
+  <a href="#diagram"><i class="fa-solid fa-sitemap"></i> System Diagram</a>
+  <a href="#evaluation"><i class="fa-solid fa-chart-column"></i> Evaluation &amp; Metrics</a>
+  <a href="#outcomes"><i class="fa-solid fa-circle-check"></i> Course Outcomes</a>
+  <a href="#future"><i class="fa-solid fa-rocket"></i> Future Applications</a>
+  <a href="#conclusion"><i class="fa-solid fa-flag-checkered"></i> Conclusion</a>
+
+  <div class="nav-section-label">Appendix</div>
+  <a href="#glossary"><i class="fa-solid fa-book-open"></i> Glossary</a>
+  <a href="#references"><i class="fa-solid fa-scroll"></i> References</a>
+</nav>
+
+<!-- ── Main Content ── -->
+<main>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="hero">
+      <div class="hero-tag"><i class="fa-solid fa-map-location-dot"></i> AI System Map &amp; Personal Learning Reflection</div>
+      <h1>Personal <span>AI Map</span></h1>
+      <p class="hero-sub">A systematic reflection on AI skills mastered across the semester — and how they will shape future research, academic work, and professional practice.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item"><i class="fa-solid fa-user-graduate"></i> Teh Bismin (LS2525222)</div>
+        <div class="hero-meta-item"><i class="fa-solid fa-graduation-cap"></i> Remote Sensing &amp; Geoinformatics</div>
+        <div class="hero-meta-item"><i class="fa-solid fa-calendar"></i> 2025</div>
+        <div class="hero-meta-item"><i class="fa-solid fa-location-dot"></i> Chiang Mai, Thailand</div>
+      </div>
+    </div>
+
+    <div class="personal-note">
+      <i class="fa-solid fa-pen-fancy"></i>
+      <p>This document is my personal AI learning map. The reflections, conceptual shifts, and future plans described here are my own. The <strong>Agentic RAG project for Smart Tourism in Chiang Mai</strong> served as the primary integration vehicle for this reflection, connecting AI techniques from across the course to real geospatial and tourism challenges in Northern Thailand.</p>
+    </div>
+  </section>
+
+  <!-- Executive Summary -->
+  <section id="summary">
+    <div class="section-header">
+      <div class="section-icon icon-blue"><i class="fa-solid fa-table-list"></i></div>
+      <h2>Executive Summary — AI Skills at a Glance</h2>
+      <small>10 domains</small>
+    </div>
+    <div class="skill-grid">
+      <div class="skill-card">
+        <div class="skill-card-icon" style="background:#dbeafe;color:#1d4ed8"><i class="fa-solid fa-filter"></i></div>
+        <div class="skill-card-body">
+          <h4>Data Preparation &amp; Quality</h4>
+          <p>Speed filtering (GPS), language detection, place-relevance scoring, spam filtering, deduplication, curated sentiment labelling (500 examples)</p>
+          <span class="skill-card-applied"><i class="fa-solid fa-wrench"></i> Project pipeline — Step 1</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon" style="background:#dcfce7;color:#15803d"><i class="fa-solid fa-circle-nodes"></i></div>
+        <div class="skill-card-body">
+          <h4>Classical ML: Clustering</h4>
+          <p>DBSCAN (density-based clustering), epsilon calibration, noise-point handling, spatial dwell-zone identification</p>
+          <span class="skill-card-applied"><i class="fa-solid fa-wrench"></i> GPS trajectory analysis</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon" style="background:#ede9fe;color:#6d28d9"><i class="fa-solid fa-sliders"></i></div>
+        <div class="skill-card-body">
+          <h4>Feature Engineering</h4>
+          <p>Composite density scoring, weighted feature blending, confidence-floor features, domain-knowledge encoding as weights</p>
+          <span class="skill-card-applied"><i class="fa-solid fa-wrench"></i> GPS density model</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon" style="background:#ffedd5;color:#c2410c"><i class="fa-solid fa-chart-bar"></i></div>
+        <div class="skill-card-body">
+          <h4>Supervised ML Foundations</h4>
+          <p>Classification metrics (precision, recall, F1), regression, overfitting/underfitting, cross-validation, decision trees, model validation</p>
+          <span class="skill-card-applied"><i class="fa-solid fa-book"></i> Coursework &amp; foundations</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon" style="background:#ccfbf1;color:#0f766e"><i class="fa-solid fa-language"></i></div>
+        <div class="skill-card-body">
+          <h4>NLP &amp; Transformers</h4>
+          <p>Transformer architecture, self-attention, multilingual models, XLM-RoBERTa (sentiment), MiniLM (embeddings), zero-shot transfer</p>
+          <span class="skill-card-applied"><i class="fa-solid fa-wrench"></i> Sentiment pipeline</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon" style="background:#fce7f3;color:#9d174d"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <div class="skill-card-body">
+          <h4>Vector Retrieval &amp; RAG</h4>
+          <p>Dense vector embeddings (384-d), L2 normalisation, FAISS IndexFlatIP, cosine similarity search, chunking strategy, context assembly</p>
+          <span class="skill-card-applied"><i class="fa-solid fa-wrench"></i> Knowledge base &amp; retrieval</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon" style="background:#fef9c3;color:#713f12"><i class="fa-solid fa-robot"></i></div>
+        <div class="skill-card-body">
+          <h4>Agentic AI &amp; Prompting</h4>
+          <p>ReAct framework, tool-calling LLM agents, system prompt design, tool-use policies, data provenance labelling, negative-example prompting</p>
+          <span class="skill-card-applied"><i class="fa-solid fa-wrench"></i> LLM agent layer</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon" style="background:#e0e7ff;color:#3730a3"><i class="fa-solid fa-ruler-combined"></i></div>
+        <div class="skill-card-body">
+          <h4>Evaluation (IR &amp; ML)</h4>
+          <p>Hit Rate @1/3/5, Mean Reciprocal Rank (MRR), per-category query evaluation, qualitative failure analysis, confusion matrix, ROC concepts</p>
+          <span class="skill-card-applied"><i class="fa-solid fa-wrench"></i> System evaluation</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon" style="background:#d1fae5;color:#065f46"><i class="fa-solid fa-earth-asia"></i></div>
+        <div class="skill-card-body">
+          <h4>Geospatial AI</h4>
+          <p>POI coordinate management, GeoJSON, Folium map rendering, spatial query routing, GPS simulation (Correlated Random Walk)</p>
+          <span class="skill-card-applied"><i class="fa-solid fa-wrench"></i> GIS integration layer</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon" style="background:#f1f5f9;color:#334155"><i class="fa-brands fa-docker"></i></div>
+        <div class="skill-card-body">
+          <h4>Deployment &amp; MLOps</h4>
+          <p>Docker, docker-compose, named volumes, HuggingFace model caching, pickle-safe model wrappers, health checks, environment variables</p>
+          <span class="skill-card-applied"><i class="fa-solid fa-wrench"></i> Streamlit + Docker deployment</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Introduction: Before & After -->
+  <section id="intro">
+    <div class="section-header">
+      <div class="section-icon icon-purple"><i class="fa-solid fa-lightbulb"></i></div>
+      <h2>Introduction: How My Understanding of AI Changed</h2>
+    </div>
+    <div class="card" style="margin-bottom:1rem">
+      <p style="font-size:.88rem;color:#334155;line-height:1.75">
+        My academic background before this course was in Remote Sensing and GIS — comfortable with satellite imagery, spatial databases, and desktop GIS platforms, but lacking any systematic understanding of how machine learning could reason about spatial patterns, synthesise heterogeneous evidence, or answer natural-language questions about geographic phenomena. I came in seeing AI primarily as a <strong>black box</strong>: an input–output machine. The Agentic RAG project changed that picture entirely.
+      </p>
+      <p style="font-size:.88rem;color:#334155;line-height:1.75;margin-top:.85rem">
+        For the first time, I was confronted with the reality that building a functional AI system is not a modelling problem — it is, at its core, an <strong>integration problem</strong>. Perhaps the shift that surprised me most was discovering the centrality of <em>language</em> in AI system design. The most consequential design decisions were not numerical; they were linguistic.
+      </p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col">
+        <div class="compare-col-header before"><i class="fa-solid fa-backward"></i> Before This Course</div>
+        <div class="compare-row"><strong>Mental model of AI</strong>AI = algorithm + dataset. A single model produces an answer.</div>
+        <div class="compare-row"><strong>Role of data quality</strong>Preprocessing is a preliminary step before the "real" work of modelling.</div>
+        <div class="compare-row"><strong>Language models</strong>LLMs are chatbots: powerful but separate from analytical pipelines.</div>
+        <div class="compare-row"><strong>Prompt engineering</strong>Prompts are informal instructions; the model figures out the rest.</div>
+        <div class="compare-row"><strong>Evaluation</strong>Accuracy is the primary measure of quality.</div>
+        <div class="compare-row"><strong>Deployment</strong>Deployment = uploading code to a server.</div>
+      </div>
+      <div class="compare-col">
+        <div class="compare-col-header after"><i class="fa-solid fa-forward"></i> After This Project</div>
+        <div class="compare-row"><strong>Mental model of AI</strong>AI = integrated system of data pipelines, retrieval, generation, and orchestration.</div>
+        <div class="compare-row"><strong>Role of data quality</strong>Data quality gates are load-bearing; without them, every downstream component degrades.</div>
+        <div class="compare-row"><strong>Language models</strong>LLMs are orchestrators that can reason, invoke tools, and synthesise heterogeneous evidence.</div>
+        <div class="compare-row"><strong>Prompt engineering</strong>Prompts encode domain knowledge, epistemic norms, tool-use policies, and failure-mode guidance.</div>
+        <div class="compare-row"><strong>Evaluation</strong>IR metrics (HR@k, MRR), per-category breakdowns, and qualitative failure analysis are all necessary.</div>
+        <div class="compare-row"><strong>Deployment</strong>Involves containerisation, model caching, environment management, and operational reliability.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Concept Map -->
+  <section id="concepts">
+    <div class="section-header">
+      <div class="section-icon icon-teal"><i class="fa-solid fa-diagram-project"></i></div>
+      <h2>AI Concept-to-Application Map</h2>
+      <small>12 concepts applied in the Agentic RAG project</small>
+    </div>
+    <div class="concept-grid">
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">1</div>
+          <h4>Classical ML: Clustering (DBSCAN)</h4>
+          <span>Session 3</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-map-pin" style="color:var(--accent);margin-right:.35rem"></i>Spatial clustering of GPS trajectory points to identify tourist dwell zones. ε = 0.002°, min_samples = 5. <span class="cite">[10]</span></p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Algorithm selection is a domain decision, not just a technical one. DBSCAN's noise-point handling is essential for GPS data where outliers represent transit, not tourism.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">2</div>
+          <h4>Data Quality &amp; Filtering</h4>
+          <span>Session 4</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-filter" style="color:var(--accent);margin-right:.35rem"></i>Speed-filter discards GPS samples implying &gt;150 km/h; language &amp; place-relevance filters clean YouTube comments.</p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Data quality gates are not preprocessing — they are the first model. I began treating data filtering as a deliberate design decision, not a chore.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">3</div>
+          <h4>Feature Engineering</h4>
+          <span>Session 5</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-sliders" style="color:var(--accent);margin-right:.35rem"></i>Composite GPS density score: weighted blend of DBSCAN cluster ratio (w=0.6) and base density (w=0.4). Confidence-floor feature.</p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Feature design is where domain knowledge enters the system. Choosing 0.6/0.4 was an epistemological decision expressing my belief that empirical cluster data is more reliable than calibrated priors.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">4</div>
+          <h4>Transformer Architecture / Attention</h4>
+          <span>Session 6</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-brain" style="color:var(--accent);margin-right:.35rem"></i>XLM-RoBERTa for multilingual sentiment; MiniLM for 384-d dense sentence embedding.</p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Transformers contextualise each token relative to every other token. 'Crowded' meaning different things at a heritage site vs. a market was handled automatically — without any rule I wrote.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">5</div>
+          <h4>Transfer Learning &amp; Fine-tuning</h4>
+          <span>Session 6</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-arrows-rotate" style="color:var(--accent);margin-right:.35rem"></i>Both models applied zero-shot to the tourism domain, leveraging multilingual pretraining.</p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Transfer learning is not a shortcut — it is a form of prior knowledge. Using a multilingual model allowed Thai–English mixed comments to be processed coherently.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">6</div>
+          <h4>Vector Embeddings &amp; Similarity Search</h4>
+          <span>Session 7</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-vector-square" style="color:var(--accent);margin-right:.35rem"></i>384-d L2-normalised dense vectors; FAISS IndexFlatIP for exact cosine similarity search. <span class="cite">[7]</span><span class="cite">[8]</span></p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>L2 normalisation converting inner product to cosine distance was a small insight with large consequences: without it, long documents would dominate retrieval regardless of semantic relevance.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">7</div>
+          <h4>Retrieval-Augmented Generation (RAG)</h4>
+          <span>Session 8</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-database" style="color:var(--accent);margin-right:.35rem"></i>Semantic query encoding → top-k FAISS search → context assembly → LLM generation conditioned on retrieved passages. <span class="cite">[4]</span><span class="cite">[6]</span></p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>RAG changed my understanding of hallucination. It is not a model failing — it is a model generating without evidence. RAG provides the evidence.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">8</div>
+          <h4>Agentic AI &amp; ReAct</h4>
+          <span>Session 9</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-robot" style="color:var(--accent);margin-right:.35rem"></i>LLM agent autonomously decides when to invoke rag_retrieve(), get_hotspot(), or get_sentiment_summary() based on reasoning traces.</p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Tool descriptions are as important as tool implementations. When I wrote vague descriptions, the agent invoked the wrong tools. When I rewrote them precisely, it routed correctly.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">9</div>
+          <h4>Prompt Engineering</h4>
+          <span>Session 9</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-code" style="color:var(--accent);margin-right:.35rem"></i>System prompt encodes data provenance labels, temporal reasoning guidance, and tool-use policies.</p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Prompt engineering is not formatting — it is a form of knowledge representation. This reframed prompting as a design discipline.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">10</div>
+          <h4>Geospatial AI / GIS Integration</h4>
+          <span>Sessions 2, 8</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-map" style="color:var(--accent);margin-right:.35rem"></i>POI coordinates feed into GPS simulation, DBSCAN, Folium rendering, and the get_hotspot() tool. GeoJSON bridges analytical and visualisation layers.</p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Spatial context changes query semantics entirely. 'Is Wat Doi Suthep crowded?' requires GPS data; 'Is it worth visiting?' requires sentiment. The agent needs to know this distinction.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">11</div>
+          <h4>Evaluation Metrics (IR)</h4>
+          <span>Session 10</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-solid fa-chart-line" style="color:var(--accent);margin-right:.35rem"></i>HR@1/3/5 and MRR computed over 38 queries; breakdown by category (crowd, sentiment, planning, overtourism).</p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Per-category evaluation revealed something aggregate metrics hid: the system performed poorly on cross-POI crowd comparisons. Evaluation is not confirmation — it is diagnosis.</div>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-num">12</div>
+          <h4>Containerisation &amp; MLOps</h4>
+          <span>Session 11</span>
+        </div>
+        <div class="concept-body">
+          <p class="concept-application"><i class="fa-brands fa-docker" style="color:var(--accent);margin-right:.35rem"></i>Docker + docker-compose orchestrates Streamlit app, mounts data volumes, caches HuggingFace model weights via named volumes.</p>
+          <div class="concept-insight"><i class="fa-solid fa-quote-left" style="color:#cbd5e1;margin-right:.35rem;font-size:.7rem"></i>Model caching exposed a concern I had never considered: operational cost. Without the named volume, each restart re-downloads 1.3 GB. Deployment means 'making it run sustainably'.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- System Architecture Diagram -->
+  <section id="diagram">
+    <div class="section-header">
+      <div class="section-icon icon-teal"><i class="fa-solid fa-sitemap"></i></div>
+      <h2>System Architecture Diagram</h2>
+      <small>Data flow: raw inputs → processing → retrieval → agent → output</small>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 860 420" xmlns="http://www.w3.org/2000/svg" style="font-family:'Segoe UI',system-ui,sans-serif">
+        <!-- Background lanes -->
+        <rect x="10" y="10" width="840" height="90" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+        <rect x="10" y="110" width="840" height="90" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+        <rect x="10" y="210" width="840" height="90" rx="10" fill="#fdf4ff" stroke="#e9d5ff" stroke-width="1"/>
+        <rect x="10" y="310" width="840" height="90" rx="10" fill="#fff9f0" stroke="#fde68a" stroke-width="1"/>
+
+        <!-- Lane labels -->
+        <text x="24" y="62" font-size="10" fill="#1d4ed8" font-weight="700" transform="rotate(-90,24,62)" text-anchor="middle">GPS</text>
+        <text x="24" y="162" font-size="10" fill="#15803d" font-weight="700" transform="rotate(-90,24,162)" text-anchor="middle">NLP</text>
+        <text x="24" y="262" font-size="10" fill="#7c3aed" font-weight="700" transform="rotate(-90,24,262)" text-anchor="middle">RAG</text>
+        <text x="24" y="362" font-size="10" fill="#b45309" font-weight="700" transform="rotate(-90,24,362)" text-anchor="middle">AGENT</text>
+
+        <!-- ── GPS lane ── -->
+        <!-- GPS Sim -->
+        <rect x="44" y="22" width="110" height="66" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+        <text x="99" y="46" font-size="10" fill="#1e3a8a" text-anchor="middle" font-weight="700">GPS Trajectories</text>
+        <text x="99" y="60" font-size="9" fill="#3b82f6" text-anchor="middle">(CRW Simulation)</text>
+        <text x="99" y="75" font-size="8.5" fill="#64748b" text-anchor="middle">ε=0.002°, min=5</text>
+        <!-- arrow -->
+        <line x1="154" y1="55" x2="184" y2="55" stroke="#93c5fd" stroke-width="2" marker-end="url(#arr-blue)"/>
+        <!-- Speed Filter -->
+        <rect x="184" y="22" width="100" height="66" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+        <text x="234" y="48" font-size="10" fill="#1e3a8a" text-anchor="middle" font-weight="700">Speed Filter</text>
+        <text x="234" y="63" font-size="9" fill="#64748b" text-anchor="middle">&lt;150 km/h cutoff</text>
+        <text x="234" y="77" font-size="8" fill="#94a3b8" text-anchor="middle">removes outliers</text>
+        <!-- arrow -->
+        <line x1="284" y1="55" x2="314" y2="55" stroke="#93c5fd" stroke-width="2" marker-end="url(#arr-blue)"/>
+        <!-- DBSCAN -->
+        <rect x="314" y="22" width="100" height="66" rx="8" fill="#1d4ed8" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="364" y="48" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">DBSCAN</text>
+        <text x="364" y="63" font-size="9" fill="#bfdbfe" text-anchor="middle">Spatial Clustering</text>
+        <text x="364" y="77" font-size="8" fill="#93c5fd" text-anchor="middle">[10]</text>
+        <!-- arrow -->
+        <line x1="414" y1="55" x2="444" y2="55" stroke="#93c5fd" stroke-width="2" marker-end="url(#arr-blue)"/>
+        <!-- Dwell Zones -->
+        <rect x="444" y="22" width="110" height="66" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+        <text x="499" y="48" font-size="10" fill="#1e3a8a" text-anchor="middle" font-weight="700">Dwell Zones</text>
+        <text x="499" y="63" font-size="9" fill="#3b82f6" text-anchor="middle">Density Score</text>
+        <text x="499" y="77" font-size="8.5" fill="#64748b" text-anchor="middle">w=0.6/0.4 blend</text>
+        <!-- arrow to agent -->
+        <line x1="499" y1="88" x2="499" y2="322" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="506" y="200" font-size="8" fill="#93c5fd">get_hotspot()</text>
+
+        <!-- ── NLP lane ── -->
+        <!-- YouTube Comments -->
+        <rect x="44" y="122" width="110" height="66" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+        <text x="99" y="146" font-size="10" fill="#14532d" text-anchor="middle" font-weight="700">YouTube Comments</text>
+        <text x="99" y="161" font-size="9" fill="#16a34a" text-anchor="middle">500 labelled examples</text>
+        <text x="99" y="175" font-size="8.5" fill="#64748b" text-anchor="middle">multilingual (TH+EN)</text>
+        <!-- arrow -->
+        <line x1="154" y1="155" x2="184" y2="155" stroke="#86efac" stroke-width="2" marker-end="url(#arr-green)"/>
+        <!-- Lang Filter -->
+        <rect x="184" y="122" width="100" height="66" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+        <text x="234" y="146" font-size="10" fill="#14532d" text-anchor="middle" font-weight="700">Lang + Spam</text>
+        <text x="234" y="161" font-size="9" fill="#64748b" text-anchor="middle">Filter Pipeline</text>
+        <text x="234" y="175" font-size="8" fill="#94a3b8" text-anchor="middle">relevance score</text>
+        <!-- arrow -->
+        <line x1="284" y1="155" x2="314" y2="155" stroke="#86efac" stroke-width="2" marker-end="url(#arr-green)"/>
+        <!-- XLM-RoBERTa -->
+        <rect x="314" y="122" width="100" height="66" rx="8" fill="#15803d" stroke="#15803d" stroke-width="1.5"/>
+        <text x="364" y="146" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">XLM-RoBERTa</text>
+        <text x="364" y="161" font-size="9" fill="#bbf7d0" text-anchor="middle">Sentiment (zero-shot)</text>
+        <text x="364" y="175" font-size="8" fill="#86efac" text-anchor="middle">[7,9]</text>
+        <!-- arrow -->
+        <line x1="414" y1="155" x2="444" y2="155" stroke="#86efac" stroke-width="2" marker-end="url(#arr-green)"/>
+        <!-- Sentiment Scores -->
+        <rect x="444" y="122" width="110" height="66" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+        <text x="499" y="146" font-size="10" fill="#14532d" text-anchor="middle" font-weight="700">Sentiment Scores</text>
+        <text x="499" y="161" font-size="9" fill="#16a34a" text-anchor="middle">conf-floor @ 0.70</text>
+        <text x="499" y="175" font-size="8.5" fill="#64748b" text-anchor="middle">per-POI aggregated</text>
+        <!-- arrow to agent -->
+        <line x1="555" y1="155" x2="610" y2="355" stroke="#86efac" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="590" y="260" font-size="8" fill="#86efac">get_sentiment()</text>
+
+        <!-- ── RAG lane ── -->
+        <!-- Knowledge Docs -->
+        <rect x="44" y="222" width="110" height="66" rx="8" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+        <text x="99" y="246" font-size="10" fill="#3b0764" text-anchor="middle" font-weight="700">Knowledge Docs</text>
+        <text x="99" y="261" font-size="9" fill="#7c3aed" text-anchor="middle">POI descriptions</text>
+        <text x="99" y="275" font-size="8.5" fill="#64748b" text-anchor="middle">tourism guides</text>
+        <!-- arrow -->
+        <line x1="154" y1="255" x2="184" y2="255" stroke="#c4b5fd" stroke-width="2" marker-end="url(#arr-purple)"/>
+        <!-- MiniLM -->
+        <rect x="184" y="222" width="100" height="66" rx="8" fill="#6d28d9" stroke="#6d28d9" stroke-width="1.5"/>
+        <text x="234" y="246" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">MiniLM Encoder</text>
+        <text x="234" y="261" font-size="9" fill="#ddd6fe" text-anchor="middle">384-d embeddings</text>
+        <text x="234" y="275" font-size="8" fill="#c4b5fd" text-anchor="middle">L2-normalised [7]</text>
+        <!-- arrow -->
+        <line x1="284" y1="255" x2="314" y2="255" stroke="#c4b5fd" stroke-width="2" marker-end="url(#arr-purple)"/>
+        <!-- FAISS -->
+        <rect x="314" y="222" width="100" height="66" rx="8" fill="#7c3aed" stroke="#7c3aed" stroke-width="1.5"/>
+        <text x="364" y="246" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">FAISS Index</text>
+        <text x="364" y="261" font-size="9" fill="#ddd6fe" text-anchor="middle">IndexFlatIP</text>
+        <text x="364" y="275" font-size="8" fill="#c4b5fd" text-anchor="middle">cosine sim [8]</text>
+        <!-- arrow -->
+        <line x1="414" y1="255" x2="444" y2="255" stroke="#c4b5fd" stroke-width="2" marker-end="url(#arr-purple)"/>
+        <!-- Context Assembly -->
+        <rect x="444" y="222" width="110" height="66" rx="8" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+        <text x="499" y="246" font-size="10" fill="#3b0764" text-anchor="middle" font-weight="700">Context Assembly</text>
+        <text x="499" y="261" font-size="9" fill="#7c3aed" text-anchor="middle">top-k retrieved</text>
+        <text x="499" y="275" font-size="8.5" fill="#64748b" text-anchor="middle">provenance labelled</text>
+        <!-- arrow to agent -->
+        <line x1="554" y1="255" x2="660" y2="322" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="620" y="295" font-size="8" fill="#a78bfa">rag_retrieve()</text>
+
+        <!-- ── Agent lane ── -->
+        <!-- User Query -->
+        <rect x="44" y="322" width="110" height="66" rx="8" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
+        <text x="99" y="346" font-size="10" fill="#451a03" text-anchor="middle" font-weight="700">User Query</text>
+        <text x="99" y="361" font-size="9" fill="#92400e" text-anchor="middle">natural language</text>
+        <text x="99" y="375" font-size="8.5" fill="#64748b" text-anchor="middle">38 eval queries</text>
+        <!-- arrow -->
+        <line x1="154" y1="355" x2="184" y2="355" stroke="#fcd34d" stroke-width="2" marker-end="url(#arr-amber)"/>
+        <!-- Query Encoder -->
+        <rect x="184" y="322" width="100" height="66" rx="8" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
+        <text x="234" y="346" font-size="10" fill="#451a03" text-anchor="middle" font-weight="700">Query Encoder</text>
+        <text x="234" y="361" font-size="9" fill="#92400e" text-anchor="middle">MiniLM 384-d</text>
+        <text x="234" y="375" font-size="8.5" fill="#64748b" text-anchor="middle">→ FAISS search</text>
+        <!-- arrow -->
+        <line x1="284" y1="355" x2="314" y2="355" stroke="#fcd34d" stroke-width="2" marker-end="url(#arr-amber)"/>
+        <!-- ReAct Agent -->
+        <rect x="314" y="322" width="120" height="66" rx="8" fill="#b45309" stroke="#b45309" stroke-width="1.5"/>
+        <text x="374" y="346" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">ReAct Agent</text>
+        <text x="374" y="361" font-size="9" fill="#fef3c7" text-anchor="middle">LLM Orchestrator [5]</text>
+        <text x="374" y="375" font-size="8" fill="#fde68a" text-anchor="middle">tool-use policy in prompt</text>
+        <!-- arrow -->
+        <line x1="434" y1="355" x2="464" y2="355" stroke="#fcd34d" stroke-width="2" marker-end="url(#arr-amber)"/>
+        <!-- Response -->
+        <rect x="464" y="322" width="120" height="66" rx="8" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
+        <text x="524" y="346" font-size="10" fill="#451a03" text-anchor="middle" font-weight="700">Grounded Response</text>
+        <text x="524" y="361" font-size="9" fill="#92400e" text-anchor="middle">provenance labels</text>
+        <text x="524" y="375" font-size="8.5" fill="#64748b" text-anchor="middle">HR@1/3/5 evaluated</text>
+
+        <!-- Evaluation badge -->
+        <rect x="620" y="322" width="215" height="66" rx="8" fill="#1a3a5c" stroke="#1a3a5c" stroke-width="1.5"/>
+        <text x="727" y="342" font-size="10" fill="#93c5fd" text-anchor="middle" font-weight="700">Evaluation Framework</text>
+        <text x="727" y="358" font-size="9" fill="#fff" text-anchor="middle">38 queries · 4 categories</text>
+        <text x="727" y="372" font-size="9" fill="#bfdbfe" text-anchor="middle">HR@1/3/5 · MRR · per-category F/A [12]</text>
+        <line x1="584" y1="355" x2="620" y2="355" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+        <!-- Arrowhead markers -->
+        <defs>
+          <marker id="arr-blue"   markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#93c5fd"/></marker>
+          <marker id="arr-green"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#86efac"/></marker>
+          <marker id="arr-purple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#c4b5fd"/></marker>
+          <marker id="arr-amber"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#fcd34d"/></marker>
+        </defs>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Evaluation Metrics & Comparison -->
+  <section id="evaluation">
+    <div class="section-header">
+      <div class="section-icon icon-indigo"><i class="fa-solid fa-chart-column"></i></div>
+      <h2>Evaluation Metrics &amp; System Comparison</h2>
+      <small>38 queries · 4 categories · IR metrics</small>
+    </div>
+
+    <!-- Metric summary cards -->
+    <div class="metrics-grid">
+      <!-- Per-category performance -->
+      <div class="metric-card">
+        <h4><i class="fa-solid fa-chart-bar" style="color:var(--accent)"></i> Retrieval Performance by Query Category</h4>
+        <div class="perf-bar-wrap">
+          <div class="cat-row">
+            <span class="cat-label">Sentiment queries</span>
+            <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:88%;background:#15803d"></div></div>
+            <span class="cat-score val-hi">High</span>
+          </div>
+          <div class="cat-row">
+            <span class="cat-label">General planning</span>
+            <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:75%;background:#2e7dbc"></div></div>
+            <span class="cat-score val-hi" style="color:#2e7dbc">Good</span>
+          </div>
+          <div class="cat-row">
+            <span class="cat-label">Overtourism advice</span>
+            <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:62%;background:#d97706"></div></div>
+            <span class="cat-score val-mid">Mid</span>
+          </div>
+          <div class="cat-row">
+            <span class="cat-label">Cross-POI crowd comparison</span>
+            <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:38%;background:#be123c"></div></div>
+            <span class="cat-score val-lo">Low</span>
+          </div>
+        </div>
+        <p style="font-size:.76rem;color:var(--muted);margin-top:.85rem;line-height:1.55"><i class="fa-solid fa-circle-info" style="color:#60a5fa;margin-right:.3rem"></i>Cross-POI crowd comparison underperformed on aggregate HR — diagnosis drove a targeted chunking fix for multi-POI queries. <span class="cite">[12]</span></p>
+      </div>
+
+      <!-- Key metrics -->
+      <div class="metric-card">
+        <h4><i class="fa-solid fa-ruler" style="color:var(--accent3)"></i> Evaluation Dataset &amp; Key Figures</h4>
+        <div class="metric-row"><span class="label">Total evaluation queries</span><span class="metric-val">38</span></div>
+        <div class="metric-row"><span class="label">Query categories</span><span class="metric-val">4</span></div>
+        <div class="metric-row"><span class="label">Labelled sentiment examples</span><span class="metric-val">500</span></div>
+        <div class="metric-row"><span class="label">Embedding dimensions (MiniLM)</span><span class="metric-val">384-d</span></div>
+        <div class="metric-row"><span class="label">Sentiment confidence floor</span><span class="metric-val">0.70</span></div>
+        <div class="metric-row"><span class="label">DBSCAN ε (degrees)</span><span class="metric-val">0.002°</span></div>
+        <div class="metric-row"><span class="label">DBSCAN min_samples</span><span class="metric-val">5</span></div>
+        <div class="metric-row"><span class="label">Model cache size (HuggingFace)</span><span class="metric-val">1.3 GB</span></div>
+        <div class="metric-row"><span class="label">Density weight (cluster ratio)</span><span class="metric-val val-hi">w = 0.6</span></div>
+        <div class="metric-row"><span class="label">Density weight (base prior)</span><span class="metric-val">w = 0.4</span></div>
+      </div>
+    </div>
+
+    <!-- Agentic RAG vs Plain RAG comparison -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:.9rem 1.25rem;background:#f8fafc;border-bottom:1px solid var(--border);font-size:.87rem;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:.5rem">
+        <i class="fa-solid fa-scale-balanced" style="color:var(--accent)"></i> Agentic RAG vs. Plain RAG — Systematic Comparison
+        <span style="margin-left:auto;font-size:.75rem;font-weight:400;color:var(--muted)">Based on project evaluation results <span class="cite">[4]</span><span class="cite">[5]</span></span>
+      </div>
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th style="width:22%">Dimension</th>
+            <th class="rag-col" style="width:37%"><i class="fa-solid fa-minus-circle"></i> Plain RAG</th>
+            <th class="agen-col" style="width:37%"><i class="fa-solid fa-plus-circle"></i> Agentic RAG</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="dim">Query handling</td>
+            <td class="lose">Single retrieval step — one vector search per query</td>
+            <td class="win">Multi-step: LLM reasons, selects tool, interprets result, iterates</td>
+          </tr>
+          <tr>
+            <td class="dim">Multi-hop queries</td>
+            <td class="lose">Fails — e.g. "Which temple avoids crowds <em>and</em> has historical significance?" returns incomplete answers</td>
+            <td class="win">Handles by decomposing into sequential tool calls (get_hotspot + rag_retrieve)</td>
+          </tr>
+          <tr>
+            <td class="dim">Data source routing</td>
+            <td class="neutral">Unified FAISS index only — cannot distinguish GPS vs. sentiment signals</td>
+            <td class="win">Separate tools: <code>rag_retrieve()</code>, <code>get_hotspot()</code>, <code>get_sentiment_summary()</code></td>
+          </tr>
+          <tr>
+            <td class="dim">Token overhead</td>
+            <td class="win">Baseline (1×)</td>
+            <td class="lose">+62% tokens (reasoning traces + tool calls + result formatting)</td>
+          </tr>
+          <tr>
+            <td class="dim">Transparency</td>
+            <td class="lose">Black-box retrieval; no intermediate reasoning visible</td>
+            <td class="win">ReAct traces expose reasoning chain; data provenance labelled per response</td>
+          </tr>
+          <tr>
+            <td class="dim">Failure mode</td>
+            <td class="lose">Incomplete / hallucinated answers when evidence spans multiple data types</td>
+            <td class="neutral">Tool misdirection (fixable via precise tool descriptions + negative examples) <span class="cite">[5]</span></td>
+          </tr>
+          <tr>
+            <td class="dim">Deployment cost</td>
+            <td class="win">Lower — simpler pipeline, fewer API calls</td>
+            <td class="neutral">Higher — not yet suitable for high-volume production without caching strategy</td>
+          </tr>
+          <tr>
+            <td class="dim"><strong>Overall verdict</strong></td>
+            <td colspan="2" style="color:#334155;font-size:.81rem">Agentic RAG is architecturally necessary for multi-source, multi-hop queries — but the 62% token overhead remains an open engineering problem for production scale. Plain RAG remains preferred for simple, single-source lookups.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Narrative Reflection -->
+  <section id="reflection">
+    <div class="section-header">
+      <div class="section-icon icon-rose"><i class="fa-solid fa-brain"></i></div>
+      <h2>Narrative Reflection: Formative Insights</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:#2e7dbc"></div>
+        <h4><i class="fa-solid fa-code-branch" style="color:#2e7dbc;margin-right:.45rem"></i>3.1 — The Complementarity of GPS and Text Modalities</h4>
+        <p>GPS trajectory data and social media text are not redundant — they are genuinely complementary. GPS density tells me <em>how many people</em> are present and where they concentrate; YouTube comments tell me <em>how those people felt</em> about being there. This insight shaped the agentic tool architecture: separate tools for get_hotspot() (quantitative spatial density) and get_sentiment_summary() (qualitative visitor perspective), rather than a single retrieval tool.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:#7c3aed"></div>
+        <h4><i class="fa-solid fa-shield-halved" style="color:#7c3aed;margin-right:.45rem"></i>3.2 — Data Provenance as an Ethical Responsibility</h4>
+        <p>The GPS trajectories are simulated, not collected from real tourist devices. The sentiment data represents a non-random sample of English-speaking, YouTube-engaged visitors — systematically underrepresenting domestic Thai visitors. This led me to encode provenance transparency directly into the system prompt. Responsible AI practice is not a documentation checkbox; it is an architectural decision built in from the very start.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:#16a34a"></div>
+        <h4><i class="fa-solid fa-code" style="color:#16a34a;margin-right:.45rem"></i>3.3 — From Rule-Based Thinking to Learned Filtering</h4>
+        <p>My first instinct was to build a rule-based spam filter using a fixed keyword list. Testing revealed high precision but low recall. The final design combines scored keyword matching with a confidence-floor mechanism on the downstream sentiment model. Domain knowledge is most effectively encoded as structural constraints and scoring weights — not as exhaustive enumeration of rule exceptions. A smooth scoring boundary generalises better than a hard boolean filter.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:#d97706"></div>
+        <h4><i class="fa-solid fa-triangle-exclamation" style="color:#d97706;margin-right:.45rem"></i>3.4 — Agentic Failure Modes and the Limits of My Mental Model</h4>
+        <p>The agent occasionally invoked get_hotspot() for sentiment queries, or attempted to retrieve GPS density data for historical questions about temple founding dates. These were not retrieval errors — they were prompt-level issues caused by my own imprecise tool descriptions. Agentic systems require explicit, precise tool-use policies, including negative examples and invocation preconditions, written directly into the system prompt. The agent's behaviour is a function of my prompts as much as its training.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Trajectory -->
+  <section id="trajectory">
+    <div class="section-header">
+      <div class="section-icon icon-indigo"><i class="fa-solid fa-route"></i></div>
+      <h2>Personal Learning Trajectory</h2>
+    </div>
+
+    <!-- Shifts -->
+    <div class="card" style="margin-bottom:1rem">
+      <p style="font-size:.87rem;font-weight:600;color:var(--primary);margin-bottom:.85rem"><i class="fa-solid fa-arrows-turn-right" style="margin-right:.45rem;color:var(--accent)"></i>Three Conceptual Shifts During Implementation</p>
+      <div class="shift-list">
+        <div class="shift-item">
+          <span class="shift-badge">Shift 1</span>
+          <p><strong>From retrieval to generation.</strong> I initially believed retrieval alone would suffice for answering tourism queries. The first time the system produced a coherent, context-aware response by combining retrieved passages with language model generation, I understood why the conversational interface is qualitatively superior to a ranked list.</p>
+        </div>
+        <div class="shift-item">
+          <span class="shift-badge">Shift 2</span>
+          <p><strong>From RAG to Agentic RAG.</strong> Plain RAG failed on multi-hop queries such as 'Which temple should I visit first if I want to avoid crowds and prefer historical significance?' No single retrieved document could answer this. Implementing the agentic layer was not an optional enhancement — it was a necessary response to a real failure mode.</p>
+        </div>
+        <div class="shift-item">
+          <span class="shift-badge">Shift 3</span>
+          <p><strong>From aggregate to diagnostic evaluation.</strong> Early evaluation showed acceptable aggregate Hit Rate. Per-category breakdown revealed the system performed substantially worse on cross-POI crowd comparisons. Evaluation serves to find what is wrong, not to confirm what is right.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Limitations -->
+    <div class="section-header" style="margin-top:1.75rem">
+      <div class="section-icon icon-amber"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <h2>Limitations &amp; Open Questions</h2>
+    </div>
+    <div class="limit-grid">
+      <div class="limit-card">
+        <i class="fa-solid fa-gauge-simple-high"></i>
+        <p><strong>Confidence threshold calibration:</strong> A threshold of 0.70 may be appropriate for temples (polarised sentiment) but suboptimal for markets (mixed sentiment). No principled method for setting category-specific thresholds yet.</p>
+      </div>
+      <div class="limit-card">
+        <i class="fa-solid fa-satellite-dish"></i>
+        <p><strong>CRW simulation validation:</strong> GPS trajectories are simulated, not collected. Without real tourist device data, the simulation's distributional assumptions cannot be validated against actual visitor behaviour.</p>
+      </div>
+      <div class="limit-card">
+        <i class="fa-solid fa-microchip"></i>
+        <p><strong>Agentic token overhead at scale:</strong> The agentic configuration incurs a 62% token overhead relative to plain RAG. No caching or pre-computation strategy yet designed for production query volumes.</p>
+      </div>
+      <div class="limit-card">
+        <i class="fa-solid fa-globe"></i>
+        <p><strong>Multilingual evaluation:</strong> The evaluation set of 38 queries is English-only. Performance on Thai-language queries — a large share of the target user population — remains unknown.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Course Learning Outcomes -->
+  <section id="outcomes">
+    <div class="section-header">
+      <div class="section-icon icon-green"><i class="fa-solid fa-circle-check"></i></div>
+      <h2>Connection to Course Learning Outcomes</h2>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="outcome-table">
+        <thead>
+          <tr>
+            <th style="width:35%">Learning Outcome</th>
+            <th>Project Evidence</th>
+            <th style="width:140px;text-align:center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Apply classical ML algorithms to geospatial data</strong></td>
+            <td>DBSCAN clustering of GPS trajectory points <span class="cite">[10]</span>; FAISS ANN indexing with calibrated parameters <span class="cite">[8]</span>.</td>
+            <td style="text-align:center"><span class="badge badge-full"><i class="fa-solid fa-check"></i> Fully addressed</span></td>
+          </tr>
+          <tr>
+            <td><strong>Design and evaluate a retrieval pipeline</strong></td>
+            <td>38-query evaluation set; HR@1/3/5 and MRR; per-category failure analysis driving targeted improvements <span class="cite">[11]</span>.</td>
+            <td style="text-align:center"><span class="badge badge-full"><i class="fa-solid fa-check"></i> Fully addressed</span></td>
+          </tr>
+          <tr>
+            <td><strong>Understand transformer-based NLP models</strong></td>
+            <td>XLM-RoBERTa for sentiment <span class="cite">[9]</span>; MiniLM for dense embedding <span class="cite">[7]</span>; architectural rationale and zero-shot transfer documented.</td>
+            <td style="text-align:center"><span class="badge badge-full"><i class="fa-solid fa-check"></i> Fully addressed</span></td>
+          </tr>
+          <tr>
+            <td><strong>Implement and evaluate an agentic AI system</strong></td>
+            <td>ReAct agent with three tool interfaces <span class="cite">[5]</span>; agentic vs. plain RAG comparison; prompt brittleness analysis.</td>
+            <td style="text-align:center"><span class="badge badge-full"><i class="fa-solid fa-check"></i> Fully addressed</span></td>
+          </tr>
+          <tr>
+            <td><strong>Integrate geospatial data with AI pipelines</strong></td>
+            <td>GeoJSON hotspot export; Folium map visualisation; GPS density in LLM tool context; POI ontology in system prompt <span class="cite">[2]</span><span class="cite">[3]</span>.</td>
+            <td style="text-align:center"><span class="badge badge-full"><i class="fa-solid fa-check"></i> Fully addressed</span></td>
+          </tr>
+          <tr>
+            <td><strong>Apply responsible AI practices (provenance, uncertainty)</strong></td>
+            <td>Explicit data provenance labels in system prompt; confidence-floor mechanism; simulated GPS clearly disclosed; sampling bias documented <span class="cite">[12]</span>; known limitations catalogued; responsible AI documentation template planned.</td>
+            <td style="text-align:center"><span class="badge badge-partial"><i class="fa-solid fa-circle-half-stroke"></i> Partially addressed</span></td>
+          </tr>
+          <tr>
+            <td><strong>Containerise and deploy an ML application</strong></td>
+            <td>Docker + docker-compose with health check, named volumes, environment variable management, and model caching (1.3 GB HuggingFace weights).</td>
+            <td style="text-align:center"><span class="badge badge-full"><i class="fa-solid fa-check"></i> Fully addressed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Future Applications -->
+  <section id="future">
+    <div class="section-header">
+      <div class="section-icon icon-blue"><i class="fa-solid fa-rocket"></i></div>
+      <h2>Future Applications of These Skills</h2>
+    </div>
+    <div class="future-grid">
+      <div class="future-card">
+        <div class="future-card-head" style="background:#eff6ff">
+          <i class="fa-solid fa-flask-vial" style="color:#1d4ed8"></i>
+          <h4>5.1 Research</h4>
+        </div>
+        <div class="future-card-body">
+          <div class="future-item"><i class="fa-solid fa-circle-dot"></i><span>Extend the Chiang Mai study from simulated GPS data <span class="cite">[2]</span> to real visitor movement data (CDR, geotagged Flickr, open government mobility datasets) — validating DBSCAN <span class="cite">[10]</span> parameters empirically <span class="cite">[14]</span>.</span></div>
+          <div class="future-item"><i class="fa-solid fa-circle-dot"></i><span>Incorporate temporal dynamics: stratify trajectories by hour, day of week, and seasonal period to transform static snapshots into predictive planning tools.</span></div>
+          <div class="future-item"><i class="fa-solid fa-circle-dot"></i><span>Build a RAG-based literature assistant <span class="cite">[4]</span><span class="cite">[6]</span> for the remote sensing / geospatial AI literature — grounding every claim in retrieved paper excerpts rather than parametric model knowledge.</span></div>
+          <div class="future-item"><i class="fa-solid fa-circle-dot"></i><span>Apply ML foundations (classification, feature engineering, validation) to satellite image analysis — automating land cover classification and change detection tasks.</span></div>
+        </div>
+      </div>
+      <div class="future-card">
+        <div class="future-card-head" style="background:#f0fdf4">
+          <i class="fa-solid fa-graduation-cap" style="color:#15803d"></i>
+          <h4>5.2 Academic Development</h4>
+        </div>
+        <div class="future-card-body">
+          <div class="future-item"><i class="fa-solid fa-circle-dot"></i><span>Explore multi-agent systems in advanced coursework, leveraging hands-on experience with single-agent failure modes (tool misdirection, prompt brittleness, +62% token overhead) as a grounded starting point.</span></div>
+          <div class="future-item"><i class="fa-solid fa-circle-dot"></i><span>Adopt per-category IR metrics, qualitative failure analysis, and comparative benchmarking as a standard evaluation template for all future coursework projects.</span></div>
+          <div class="future-item"><i class="fa-solid fa-circle-dot"></i><span>Carry forward the habit of evaluating to learn rather than evaluating to confirm — treating aggregate metrics as a starting point, not an endpoint.</span></div>
+        </div>
+      </div>
+      <div class="future-card">
+        <div class="future-card-head" style="background:#fdf4ff">
+          <i class="fa-solid fa-briefcase" style="color:#7e22ce"></i>
+          <h4>5.3 Professional Practice</h4>
+        </div>
+        <div class="future-card-body">
+          <div class="future-item"><i class="fa-solid fa-circle-dot"></i><span>Deploy AI-assisted spatial analysis tools for tourism planning agencies <span class="cite">[1]</span><span class="cite">[13]</span> and urban development consultancies, using the containerised Docker/docker-compose pipeline as a reusable infrastructure template.</span></div>
+          <div class="future-item"><i class="fa-solid fa-circle-dot"></i><span>Apply responsible AI practices — data provenance labelling, uncertainty communication <span class="cite">[12]</span> — in any professional context where AI-generated outputs inform decisions made by people who did not build the system.</span></div>
+          <div class="future-item"><i class="fa-solid fa-circle-dot"></i><span>Formalise a reusable responsible AI documentation template: data sources &amp; limitations, confidence calibration rationale, known failure modes, and plain-language explanations of system outputs.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion -->
+  <section id="conclusion">
+    <div class="section-header">
+      <div class="section-icon icon-blue"><i class="fa-solid fa-flag-checkered"></i></div>
+      <h2>Conclusion</h2>
+    </div>
+
+    <div class="insight-strip" style="margin-bottom:1.5rem">
+      <div class="insight-chip">
+        <i class="fa-solid fa-database" style="color:#2e7dbc"></i>
+        <h4>Data Quality is the First Model</h4>
+        <p>Without quality gates, every downstream component degrades. Data filtering is design, not chore.</p>
+      </div>
+      <div class="insight-chip">
+        <i class="fa-solid fa-pen-nib" style="color:#7c3aed"></i>
+        <h4>Language is a Design Medium</h4>
+        <p>Prompts, tool descriptions, and provenance labels are primary design artefacts in modern AI systems.</p>
+      </div>
+      <div class="insight-chip">
+        <i class="fa-solid fa-stethoscope" style="color:#16a34a"></i>
+        <h4>Evaluation is Diagnostic</h4>
+        <p>Aggregate metrics confirm; per-category breakdowns diagnose. Evaluation serves to find what is wrong.</p>
+      </div>
+    </div>
+
+    <div class="quote-block" style="margin-bottom:1.5rem">
+      <p>I came into this course knowing how to use AI tools; I leave it understanding how to think about AI systems. Using a tool means knowing its interface. Understanding a system means being able to reason about its failure modes, its data assumptions, its evaluation blind spots, and its ethical responsibilities — and being able to make deliberate design choices that address each of these.</p>
+      <small>— Teh Bismin, LS2525222</small>
+    </div>
+
+    <div class="feedback-card">
+      <p style="font-size:.8rem;font-weight:700;color:var(--primary);margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem"><i class="fa-solid fa-comment-dots" style="color:var(--accent)"></i> Course Feedback</p>
+      <p>The most valuable aspect of this course was the decision to anchor learning in a single, end-to-end project rather than a series of disconnected exercises. Working through the full stack — from raw data filtering all the way to containerised deployment — forced me to understand how concepts interact under real constraints. The introduction of the ReAct agentic paradigm was the most intellectually generative part of the course; I would welcome even earlier exposure to agentic failure modes. If I were to suggest one addition, it would be a structured peer-review session at the retrieval evaluation stage, where observing how other teams approached chunking and query design would have accelerated my own diagnostic thinking considerably.</p>
+    </div>
+  </section>
+
+  <!-- Glossary -->
+  <section id="glossary">
+    <div class="section-header">
+      <div class="section-icon icon-teal"><i class="fa-solid fa-book-open"></i></div>
+      <h2>Glossary of Technical Terms</h2>
+    </div>
+    <div class="glossary-grid">
+      <div class="gloss-item"><div class="gloss-term">CRW — Correlated Random Walk</div><div class="gloss-def">A stochastic movement model in which each step direction is partially correlated with the previous step. Used to simulate realistic tourist GPS trajectories.</div></div>
+      <div class="gloss-item"><div class="gloss-term">DBSCAN</div><div class="gloss-def">Density-Based Spatial Clustering of Applications with Noise. Groups points by local density rather than distance to a centroid; designates low-density points as noise.</div></div>
+      <div class="gloss-item"><div class="gloss-term">FAISS</div><div class="gloss-def">Facebook AI Similarity Search. An open-source library for efficient similarity search over large collections of dense vector embeddings.</div></div>
+      <div class="gloss-item"><div class="gloss-term">GPS — Global Positioning System</div><div class="gloss-def">A satellite-based navigation system providing geographic coordinates. GPS trajectory data records sequences of timestamped coordinates to infer movement patterns.</div></div>
+      <div class="gloss-item"><div class="gloss-term">HR@k — Hit Rate at k</div><div class="gloss-def">An IR metric measuring the proportion of queries for which the correct answer appears within the top-k ranked results.</div></div>
+      <div class="gloss-item"><div class="gloss-term">LLM — Large Language Model</div><div class="gloss-def">A deep learning model trained on large text corpora to understand and generate human language. In this project, serves as the orchestration layer.</div></div>
+      <div class="gloss-item"><div class="gloss-term">MiniLM</div><div class="gloss-def">A compact sentence transformer model producing dense vector embeddings optimised for semantic similarity tasks, generating 384-dimensional embeddings.</div></div>
+      <div class="gloss-item"><div class="gloss-term">MLOps — Machine Learning Operations</div><div class="gloss-def">Practices combining ML, software engineering, and operations to deploy, monitor, and maintain ML models reliably in production environments.</div></div>
+      <div class="gloss-item"><div class="gloss-term">MRR — Mean Reciprocal Rank</div><div class="gloss-def">An IR metric averaging the reciprocal of the rank at which the first correct result appears across a set of queries.</div></div>
+      <div class="gloss-item"><div class="gloss-term">NLP — Natural Language Processing</div><div class="gloss-def">A subfield of AI focused on enabling computers to understand, interpret, and generate human language.</div></div>
+      <div class="gloss-item"><div class="gloss-term">POI — Point of Interest</div><div class="gloss-def">A specific geographic location relevant for analysis or tourism planning. In this project: temples, markets, and natural attractions in Chiang Mai.</div></div>
+      <div class="gloss-item"><div class="gloss-term">RAG — Retrieval-Augmented Generation</div><div class="gloss-def">An AI architecture that augments LLM generation by first retrieving relevant documents and conditioning output on retrieved evidence. Reduces hallucination.</div></div>
+      <div class="gloss-item"><div class="gloss-term">ReAct — Reasoning and Acting</div><div class="gloss-def">An agentic AI framework (Yao et al., 2023) in which a language model alternates between generating explicit reasoning traces and invoking external tools.</div></div>
+      <div class="gloss-item"><div class="gloss-term">XLM-RoBERTa</div><div class="gloss-def">Cross-lingual Language Model RoBERTa. A multilingual transformer pre-trained on text in 100 languages. Used here for zero-shot sentiment classification of mixed Thai-English reviews.</div></div>
+    </div>
+  </section>
+
+  <!-- References -->
+  <section id="references">
+    <div class="section-header">
+      <div class="section-icon icon-orange"><i class="fa-solid fa-scroll"></i></div>
+      <h2>References</h2>
+    </div>
+    <div class="card">
+      <div class="ref-list">
+        <div class="ref-item"><span class="ref-num">[1]</span><span>UNWTO, "World Tourism Barometer," United Nations World Tourism Organization, vol. 21, no. 1, Jan. 2023.</span></div>
+        <div class="ref-item"><span class="ref-num">[2]</span><span>N. Shoval and M. Isaacson, "Tracking Tourists in the Digital Age," <em>Annals of Tourism Research</em>, vol. 34, no. 1, pp. 141–159, Jan. 2007.</span></div>
+        <div class="ref-item"><span class="ref-num">[3]</span><span>J. Kiatkawsin, I. Sutherland, and J. Lee, "Determinants of Smart Tourist Technology Use," <em>Sustainability</em>, vol. 12, no. 16, p. 6584, Aug. 2020.</span></div>
+        <div class="ref-item"><span class="ref-num">[4]</span><span>P. Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," <em>NeurIPS</em>, vol. 33, pp. 9459–9474, 2020.</span></div>
+        <div class="ref-item"><span class="ref-num">[5]</span><span>S. Yao et al., "ReAct: Synergizing Reasoning and Acting in Language Models," <em>ICLR 2023</em>.</span></div>
+        <div class="ref-item"><span class="ref-num">[6]</span><span>Y. Gao et al., "Retrieval-Augmented Generation for Large Language Models: A Survey," <em>arXiv:2312.10997</em>, Dec. 2023.</span></div>
+        <div class="ref-item"><span class="ref-num">[7]</span><span>N. Reimers and I. Gurevych, "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks," <em>EMNLP</em>, pp. 3982–3992, Nov. 2019.</span></div>
+        <div class="ref-item"><span class="ref-num">[8]</span><span>J. Johnson, M. Douze, and H. Jégou, "Billion-Scale Similarity Search with GPUs," <em>IEEE Trans. Big Data</em>, vol. 7, no. 3, pp. 535–547, Sep. 2021.</span></div>
+        <div class="ref-item"><span class="ref-num">[9]</span><span>F. Barbieri et al., "TweetEval: Unified Benchmark and Comparative Evaluation for Tweet Classification," <em>EMNLP Findings</em>, pp. 1644–1650, Nov. 2020.</span></div>
+        <div class="ref-item"><span class="ref-num">[10]</span><span>M. Ester et al., "A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise," <em>KDD</em>, vol. 96, no. 34, pp. 226–231, 1996.</span></div>
+        <div class="ref-item"><span class="ref-num">[11]</span><span>V. Karpukhin et al., "Dense Passage Retrieval for Open-Domain Question Answering," <em>EMNLP</em>, pp. 6769–6781, Nov. 2020.</span></div>
+        <div class="ref-item"><span class="ref-num">[12]</span><span>S. Goodwin, "The Challenge of Overtourism," <em>Responsible Tourism Partnership</em>, Working Paper 4, Oct. 2017.</span></div>
+        <div class="ref-item"><span class="ref-num">[13]</span><span>Tourism Authority of Thailand, "Tourism Statistics 2019: Northern Region," Ministry of Tourism and Sports, Bangkok, 2020.</span></div>
+        <div class="ref-item"><span class="ref-num">[14]</span><span>A. Zheng and A. Casari, <em>Feature Engineering for Machine Learning</em>, O'Reilly Media, 2018.</span></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Reading progress bar
+  const bar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    bar.style.transform = `scaleX(${pct})`;
+  });
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('nav a');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const a = document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
