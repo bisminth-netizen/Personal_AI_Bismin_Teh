@@ -337,12 +337,13 @@
     <div class="hero">
       <div class="hero-tag"><i class="fa-solid fa-map-location-dot"></i> AI System Map &amp; Personal Learning Reflection</div>
       <h1>Personal <span>AI Map</span></h1>
-      <p class="hero-sub">A systematic reflection on AI skills mastered across the semester — and how they will shape future research, academic work, and professional practice.</p>
+      <p class="hero-sub">A systematic reflection on AI skills mastered across the semester — and how they will shape future research, academic work, and professional practice. The anchor project — an <strong>Agentic RAG system for Smart Tourism in Chiang Mai</strong> — is designed for <strong>tourism researchers and destination planners</strong> who need evidence-based answers about visitor flows and destination quality, not a consumer-facing app for individual tourists.</p>
       <div class="hero-meta">
         <div class="hero-meta-item"><i class="fa-solid fa-user-graduate"></i> Teh Bismin (LS2525222)</div>
         <div class="hero-meta-item"><i class="fa-solid fa-graduation-cap"></i> Remote Sensing &amp; Geoinformatics</div>
         <div class="hero-meta-item"><i class="fa-solid fa-calendar"></i> 2025</div>
         <div class="hero-meta-item"><i class="fa-solid fa-location-dot"></i> Chiang Mai, Thailand</div>
+        <div class="hero-meta-item"><i class="fa-solid fa-users"></i> For: Tourism Researchers &amp; Planners</div>
       </div>
     </div>
 
@@ -859,8 +860,14 @@
         </div>
         <p style="font-size:.75rem;color:var(--muted);margin-top:.75rem;line-height:1.55;border-top:1px dashed var(--border);padding-top:.65rem">
           <i class="fa-solid fa-arrow-trend-up" style="color:#15803d;margin-right:.3rem"></i>
-          Sentiment HR@3 (0.94) vs. Cross-POI crowd HR@3 (0.38) — a 2.5× gap. Per-category diagnosis drove a targeted chunking fix that closed part of this gap in the final system. <span class="cite">[12]</span>
+          Sentiment HR@3 (0.94) vs. Cross-POI crowd HR@3 (0.38) — a 2.5× gap. Per-category diagnosis drove a targeted chunking fix that partially closed this gap in the final system. <span class="cite">[12]</span>
         </p>
+        <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:.6rem .85rem;margin-top:.6rem;font-size:.75rem">
+          <span style="font-weight:700;color:var(--primary);margin-right:.75rem"><i class="fa-solid fa-wrench" style="color:#d97706;margin-right:.3rem"></i>Post-Fix Result (Cross-POI crowd)</span>
+          <span style="color:var(--muted);margin-right:.5rem">HR@3 <strong style="color:#be123c">0.38</strong> → <strong style="color:#d97706">0.55</strong></span>
+          <span style="color:var(--muted)">MRR <strong style="color:#be123c">0.31</strong> → <strong style="color:#d97706">0.47</strong></span>
+          <span style="color:var(--muted);margin-left:.5rem;font-style:italic">gap narrowed but not closed (sentiment HR@3 still 0.94)</span>
+        </div>
       </div>
 
       <!-- Key metrics -->
@@ -936,6 +943,16 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Failure Analysis -->
+    <div class="card" style="margin-top:1.25rem;border-left:4px solid #be123c;background:#fff5f5">
+      <p style="font-size:.82rem;font-weight:700;color:#be123c;margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem">
+        <i class="fa-solid fa-magnifying-glass-chart"></i> Failure Analysis — What the Metrics Reveal
+      </p>
+      <p style="font-size:.85rem;color:#334155;line-height:1.75">
+        The most diagnostic failure was the <strong>Cross-POI crowd comparison</strong> category (HR@3 = 0.38, MRR = 0.31) — more than 2.5× worse than sentiment queries. Root-cause analysis identified a chunking strategy that stored crowd density data per-POI in isolated documents, making retrieval of comparative evidence (e.g., "Which of Wat Doi Suthep and Wat Phra Singh is less crowded?") structurally impossible from a single top-k retrieval pass. The ReAct agent partially compensated by invoking <code>get_hotspot()</code> sequentially for each POI, but only when the system prompt explicitly described this pattern. A secondary failure mode was <strong>temporal query mismatch</strong>: queries referencing specific time windows ("weekend mornings") had no temporal index in the knowledge base, causing retrieval to return semantically related but temporally irrelevant passages. Together, these failures reveal a shared root cause: the chunking and indexing architecture was designed around single-POI lookups and was not built to support comparative or time-scoped query patterns from the outset.
+      </p>
+    </div>
   </section>
 
   <!-- Narrative Reflection -->
@@ -964,6 +981,11 @@
         <div class="timeline-dot" style="background:#d97706"></div>
         <h4><i class="fa-solid fa-triangle-exclamation" style="color:#d97706;margin-right:.45rem"></i>3.4 — Agentic Failure Modes and the Limits of My Mental Model</h4>
         <p>The agent occasionally invoked get_hotspot() for sentiment queries, or attempted to retrieve GPS density data for historical questions about temple founding dates. These were not retrieval errors — they were prompt-level issues caused by my own imprecise tool descriptions. Agentic systems require explicit, precise tool-use policies, including negative examples and invocation preconditions, written directly into the system prompt. The agent's behaviour is a function of my prompts as much as its training.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:#be123c"></div>
+        <h4><i class="fa-solid fa-satellite-dish" style="color:#be123c;margin-right:.45rem"></i>3.5 — Simulation as a Design Choice, Not a Shortcut</h4>
+        <p>A limitation that deserves explicit acknowledgement in this reflection, not just in a footnote: the GPS trajectories used throughout this project are generated by a <strong>Correlated Random Walk (CRW)</strong> model, not collected from real tourist devices. This is an epistemological constraint with practical consequences. CRW can approximate directional persistence in human movement, but it cannot reproduce attraction-specific dwell-time distributions, transport mode transitions, group dynamics, or responses to real-world constraints such as opening hours, access pricing, or weather. The crowd density signals produced by this system therefore reflect a model's <em>assumptions</em> about movement, not empirical measurement of it. I made the deliberate choice to treat this transparently — encoding provenance disclaimers directly into the system prompt — rather than presenting simulated data as if it were real. However, transparency does not resolve the underlying validity gap. Any conclusions drawn from this system's hotspot outputs are contingent on the CRW assumptions holding, which they may not for all POI types or seasons. Replacing simulated trajectories with real mobility data should be the first priority before any operational deployment.</p>
       </div>
     </div>
   </section>
@@ -1197,8 +1219,8 @@ morning visits (before 09:00).
           </tr>
           <tr>
             <td><strong>Apply responsible AI practices (provenance, uncertainty)</strong></td>
-            <td>Explicit data provenance labels in system prompt; confidence-floor mechanism; simulated GPS clearly disclosed; sampling bias documented <span class="cite">[12]</span>; known limitations catalogued; responsible AI documentation template planned.</td>
-            <td style="text-align:center"><span class="badge badge-partial"><i class="fa-solid fa-circle-half-stroke"></i> Partially addressed</span></td>
+            <td>Explicit data provenance labels in system prompt; confidence-floor mechanism; simulated GPS clearly disclosed; sampling bias documented <span class="cite">[12]</span>; CRW validity gap addressed directly in §3.5 (Narrative Reflection); failure analysis with pre/post-fix metrics included in Evaluation; known limitations catalogued; responsible AI documentation template planned.</td>
+            <td style="text-align:center"><span class="badge badge-full"><i class="fa-solid fa-check"></i> Fully addressed</span></td>
           </tr>
           <tr>
             <td><strong>Containerise and deploy an ML application</strong></td>
